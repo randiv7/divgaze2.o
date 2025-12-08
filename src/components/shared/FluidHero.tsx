@@ -30,17 +30,17 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       pixelRatio: Math.min(window.devicePixelRatio, 2),
       cameraZ: isMobile ? 55 : isTablet ? 45 : 35,
       ringCount: isMobile ? 3 : isTablet ? 4 : 6,
-      dragSpeed: 1.5, 
-      bounceDamping: 0.8,
+      // PHYSICS TWEAKS HERE:
+      dragSpeed: 1.0,      // Reduced throw power slightly (was 1.5)
+      bounceDamping: 0.5,  // Rings lose 50% energy on hit (was 0.8) - makes them "heavier"
     };
 
-    // Geometry Scaling (The Plan Implementation)
+    // Geometry Scaling
     const geometryConfig = {
       radius: isMobile ? 2.0 : isTablet ? 2.8 : 3.5,
       tube: isMobile ? 0.8 : isTablet ? 1.0 : 1.2,
     };
 
-    // Calculated Collision Radius (Visual Radius + Tube Thickness)
     const COLLISION_RADIUS = geometryConfig.radius + geometryConfig.tube;
 
     // 2. Scene Setup
@@ -60,13 +60,12 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     containerRef.current.appendChild(renderer.domElement);
 
-    // Calculate Screen Boundaries (Dynamic based on ring size)
+    // Calculate Screen Boundaries
     const calculateBounds = () => {
       const vFOV = THREE.MathUtils.degToRad(camera.fov);
       const visibleHeight = 2 * Math.tan(vFOV / 2) * settings.cameraZ;
       const visibleWidth = visibleHeight * camera.aspect;
       
-      // We subtract the collision radius so the ring edge hits the screen edge, not the center
       return {
         x: visibleWidth / 2 - (COLLISION_RADIUS + 0.5),
         y: visibleHeight / 2 - (COLLISION_RADIUS + 0.5),
@@ -91,7 +90,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       attenuationDistance: Infinity,
     });
 
-    // 4. Create Rings (With Scaled Geometry)
+    // 4. Create Rings
     const rings: THREE.Mesh[] = [];
     const ringGeometry = new THREE.TorusGeometry(
       geometryConfig.radius, 
@@ -103,7 +102,6 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     for (let i = 0; i < settings.ringCount; i++) {
         const ring = new THREE.Mesh(ringGeometry, material);
         
-        // Random spread inside bounds
         ring.position.set(
             (Math.random() - 0.5) * (bounds.x * 1.5),
             (Math.random() - 0.5) * (bounds.y * 1.5),
@@ -113,10 +111,11 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
         ring.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
 
         ring.userData = {
+            // PHYSICS TWEAK: Slower initial drift (0.008 instead of 0.02)
             velocity: new THREE.Vector3(
-                (Math.random() - 0.5) * 0.02,
-                (Math.random() - 0.5) * 0.02,
-                (Math.random() - 0.5) * 0.02
+                (Math.random() - 0.5) * 0.008,
+                (Math.random() - 0.5) * 0.008,
+                (Math.random() - 0.5) * 0.008
             ),
             rotationSpeed: new THREE.Vector3(
                 (Math.random() - 0.5) * 0.01,
@@ -232,8 +231,6 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        
-        // Recalculate bounds with the correct collision radius
         bounds = calculateBounds();
     };
     window.addEventListener('resize', handleResize);
@@ -260,7 +257,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
         if (!ring.userData.isDragging) {
             ring.position.add(ring.userData.velocity);
 
-            // BOUNDARY CHECK (Using dynamic bounds)
+            // BOUNDARY CHECK
             if (ring.position.x > bounds.x || ring.position.x < -bounds.x) {
                 ring.userData.velocity.x *= -1;
                 ring.position.x = Math.sign(ring.position.x) * bounds.x;
@@ -274,7 +271,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
                 ring.position.z = Math.sign(ring.position.z) * bounds.z;
             }
 
-            // COLLISION CHECK (Using dynamic radius)
+            // COLLISION CHECK
             for (let j = i + 1; j < rings.length; j++) {
                 const otherRing = rings[j];
                 const distance = ring.position.distanceTo(otherRing.position);
@@ -302,7 +299,9 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
                 }
             }
             
-            ring.userData.velocity.multiplyScalar(0.998);
+            // PHYSICS TWEAK: Higher Friction (0.990 instead of 0.998)
+            // This slows them down faster after interaction
+            ring.userData.velocity.multiplyScalar(0.990);
         }
       });
 
