@@ -1,11 +1,35 @@
 import * as THREE from 'three';
 
 /**
- * Creates a soap bubble material using custom shader for iridescence effect
+ * ENHANCED: Creates a glass/soap bubble material with better iridescence
+ * Using MeshPhysicalMaterial for realistic glass effect
  * Compatible with Three.js r128
  */
 export const createSoapBubbleMaterial = (isMobile: boolean = false) => {
-  // Custom vertex shader for iridescence
+  // Use MeshPhysicalMaterial for realistic glass effect
+  const material = new THREE.MeshPhysicalMaterial({
+    color: 0xaaccff,
+    metalness: 0,
+    roughness: 0.01,
+    transmission: 0.98, // High transmission for glass
+    thickness: 1.5,
+    clearcoat: 1.0, // Adds glossy layer
+    clearcoatRoughness: 0.01,
+    emissive: 0x000000,
+    ior: 1.52, // Index of refraction for glass
+    attenuationColor: new THREE.Color(0xffffff),
+    attenuationDistance: Infinity,
+    side: THREE.DoubleSide, // Render both sides for soap bubble effect
+  });
+
+  return material;
+};
+
+/**
+ * ENHANCED: Creates a custom shader material for advanced iridescence
+ * Use this for more dramatic rainbow effects
+ */
+export const createCustomIridescenceMaterial = (isMobile: boolean = false) => {
   const vertexShader = `
     varying vec3 vNormal;
     varying vec3 vViewPosition;
@@ -20,7 +44,6 @@ export const createSoapBubbleMaterial = (isMobile: boolean = false) => {
     }
   `;
 
-  // Custom fragment shader with iridescence
   const fragmentShader = `
     uniform float time;
     uniform vec3 lightPosition;
@@ -40,14 +63,14 @@ export const createSoapBubbleMaterial = (isMobile: boolean = false) => {
       vec3 viewDir = normalize(vViewPosition);
       vec3 normal = normalize(vNormal);
       
-      // Fresnel effect for edge glow
+      // Enhanced Fresnel effect for edge glow
       float fresnel = pow(1.0 - abs(dot(viewDir, normal)), 3.0);
       
       // Iridescence based on angle and position
       float iridescence = dot(normal, viewDir);
       iridescence = abs(iridescence);
       
-      // Add some variation based on world position for animated effect
+      // Add animated variation based on world position
       float pattern = sin(vWorldPosition.x * 2.0 + time * 0.5) * 
                      cos(vWorldPosition.y * 2.0 + time * 0.3) * 0.5 + 0.5;
       
@@ -68,7 +91,6 @@ export const createSoapBubbleMaterial = (isMobile: boolean = false) => {
     }
   `;
 
-  // Create shader material
   const material = new THREE.ShaderMaterial({
     vertexShader,
     fragmentShader,
@@ -86,7 +108,7 @@ export const createSoapBubbleMaterial = (isMobile: boolean = false) => {
 };
 
 /**
- * Update shader uniforms for animation
+ * Update shader uniforms for animation (if using custom shader)
  */
 export const updateSoapBubbleMaterial = (
   material: THREE.ShaderMaterial, 
@@ -98,5 +120,29 @@ export const updateSoapBubbleMaterial = (
     if (lightPos && material.uniforms.lightPosition) {
       material.uniforms.lightPosition.value.copy(lightPos);
     }
+  }
+};
+
+/**
+ * ENHANCED: Create material based on device capability
+ * Uses simpler material on mobile for performance
+ */
+export const createOptimizedMaterial = (isMobile: boolean = false) => {
+  if (isMobile) {
+    // Simpler material for mobile performance
+    return new THREE.MeshPhysicalMaterial({
+      color: 0xaaccff,
+      metalness: 0,
+      roughness: 0.05,
+      transmission: 0.95,
+      thickness: 1.2,
+      clearcoat: 0.8,
+      clearcoatRoughness: 0.02,
+      ior: 1.5,
+      side: THREE.DoubleSide,
+    });
+  } else {
+    // Full quality for desktop/tablet
+    return createSoapBubbleMaterial(false);
   }
 };

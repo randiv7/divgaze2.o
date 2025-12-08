@@ -10,7 +10,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
   const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
-    // 1. Device detection & Config
+    // 1. OPTIMIZED Device detection & Config
     const isMobile = window.innerWidth < 768;
     const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
     const isLowEnd = navigator.hardwareConcurrency ? navigator.hardwareConcurrency <= 4 : false;
@@ -23,22 +23,28 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
 
     if (!containerRef.current) return;
 
-    // General Settings
+    // OPTIMIZED Settings based on analysis
     const settings = {
-      ringSegments: isMobile ? 32 : isTablet ? 64 : 100,
-      particlesCount: isMobile ? 1000 : isTablet ? 3000 : 5000,
-      pixelRatio: Math.min(window.devicePixelRatio, 2),
+      // Ring count: Mobile 2, Tablet 4, Desktop 8
+      ringCount: isMobile ? 2 : isTablet ? 4 : 8,
+      // Segments: Reduced for better performance
+      ringSegments: isMobile ? 24 : isTablet ? 48 : 80,
+      // Particles: Optimized for each device
+      particlesCount: isMobile ? 800 : isTablet ? 2000 : 4000,
+      // Pixel ratio: Capped for mobile
+      pixelRatio: isMobile ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2),
       cameraZ: isMobile ? 55 : isTablet ? 45 : 35,
-      ringCount: isMobile ? 3 : isTablet ? 4 : 6,
-      // PHYSICS TWEAKS HERE:
-      dragSpeed: 1.0,      // Reduced throw power slightly (was 1.5)
-      bounceDamping: 0.5,  // Rings lose 50% energy on hit (was 0.8) - makes them "heavier"
+      // OPTIMIZED Physics
+      dragSpeed: isMobile ? 0.8 : isTablet ? 1.0 : 1.2,
+      bounceDamping: isMobile ? 0.6 : isTablet ? 0.55 : 0.5,
+      friction: isMobile ? 0.985 : isTablet ? 0.988 : 0.990,
+      initialVelocity: isMobile ? 0.006 : isTablet ? 0.007 : 0.008,
     };
 
-    // Geometry Scaling
+    // OPTIMIZED Geometry - Smaller rings for better performance and fit
     const geometryConfig = {
-      radius: isMobile ? 2.0 : isTablet ? 2.8 : 3.5,
-      tube: isMobile ? 0.8 : isTablet ? 1.0 : 1.2,
+      radius: isMobile ? 1.8 : isTablet ? 2.5 : 3.2,
+      tube: isMobile ? 0.7 : isTablet ? 0.9 : 1.0,
     };
 
     const COLLISION_RADIUS = geometryConfig.radius + geometryConfig.tube;
@@ -51,7 +57,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     camera.position.z = settings.cameraZ;
 
     const renderer = new THREE.WebGLRenderer({ 
-      antialias: !isMobile, 
+      antialias: !isMobile, // No antialiasing on mobile for performance
       alpha: true,
       powerPreference: 'high-performance'
     });
@@ -75,7 +81,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
 
     let bounds = calculateBounds();
 
-    // 3. Material (Glass)
+    // 3. Glass Material (Original Color Preserved)
     const material = new THREE.MeshPhysicalMaterial({
       color: 0xaaccff,
       metalness: 0,
@@ -90,7 +96,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       attenuationDistance: Infinity,
     });
 
-    // 4. Create Rings
+    // 4. Create Rings with OPTIMIZED distribution
     const rings: THREE.Mesh[] = [];
     const ringGeometry = new THREE.TorusGeometry(
       geometryConfig.radius, 
@@ -99,37 +105,52 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       settings.ringSegments
     );
 
+    // OPTIMIZED initial positioning for 8 rings (desktop)
+    const getInitialPosition = (index: number, total: number) => {
+      // Create a more balanced distribution
+      const angle = (index / total) * Math.PI * 2;
+      const radius = bounds.x * 0.6;
+      
+      return {
+        x: Math.cos(angle) * radius * (0.5 + Math.random() * 0.5),
+        y: Math.sin(angle) * radius * (0.5 + Math.random() * 0.5),
+        z: (Math.random() - 0.5) * 10
+      };
+    };
+
     for (let i = 0; i < settings.ringCount; i++) {
-        const ring = new THREE.Mesh(ringGeometry, material);
-        
-        ring.position.set(
-            (Math.random() - 0.5) * (bounds.x * 1.5),
-            (Math.random() - 0.5) * (bounds.y * 1.5),
-            (Math.random() - 0.5) * 10
-        );
+      const ring = new THREE.Mesh(ringGeometry, material);
+      
+      // Better initial distribution
+      const pos = getInitialPosition(i, settings.ringCount);
+      ring.position.set(pos.x, pos.y, pos.z);
 
-        ring.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+      ring.rotation.set(
+        Math.random() * Math.PI, 
+        Math.random() * Math.PI, 
+        0
+      );
 
-        ring.userData = {
-            // PHYSICS TWEAK: Slower initial drift (0.008 instead of 0.02)
-            velocity: new THREE.Vector3(
-                (Math.random() - 0.5) * 0.008,
-                (Math.random() - 0.5) * 0.008,
-                (Math.random() - 0.5) * 0.008
-            ),
-            rotationSpeed: new THREE.Vector3(
-                (Math.random() - 0.5) * 0.01,
-                (Math.random() - 0.5) * 0.01,
-                0
-            ),
-            isDragging: false
-        };
+      ring.userData = {
+        // OPTIMIZED velocity based on device
+        velocity: new THREE.Vector3(
+          (Math.random() - 0.5) * settings.initialVelocity,
+          (Math.random() - 0.5) * settings.initialVelocity,
+          (Math.random() - 0.5) * settings.initialVelocity
+        ),
+        rotationSpeed: new THREE.Vector3(
+          (Math.random() - 0.5) * 0.01,
+          (Math.random() - 0.5) * 0.01,
+          0
+        ),
+        isDragging: false
+      };
 
-        scene.add(ring);
-        rings.push(ring);
+      scene.add(ring);
+      rings.push(ring);
     }
 
-    // 5. Particles
+    // 5. OPTIMIZED Particles
     const particlesGeometry = new THREE.BufferGeometry();
     const posArray = new Float32Array(settings.particlesCount * 3);
     for (let i = 0; i < settings.particlesCount * 3; i++) {
@@ -146,7 +167,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
-    // 6. Lights
+    // 6. Lights (Original Settings Preserved)
     const light1 = new THREE.PointLight(0x00ffff, 2, 50);
     light1.position.set(10, 10, 10);
     scene.add(light1);
@@ -162,7 +183,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
     scene.add(ambientLight);
 
-    // 7. Interaction
+    // 7. OPTIMIZED Interaction
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
@@ -173,51 +194,51 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     let previousMousePosition = new THREE.Vector3();
 
     const onPointerDown = (event: MouseEvent | TouchEvent) => {
-        const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
-        const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+      const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+      const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
 
-        mouse.x = (clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+      mouse.x = (clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(clientY / window.innerHeight) * 2 + 1;
 
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(rings);
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(rings);
 
-        if (intersects.length > 0) {
-            draggedObject = intersects[0].object as THREE.Mesh;
-            draggedObject.userData.isDragging = true;
-            
-            if (raycaster.ray.intersectPlane(plane, intersection)) {
-                offset.copy(intersection).sub(draggedObject.position);
-                previousMousePosition.copy(draggedObject.position);
-            }
+      if (intersects.length > 0) {
+        draggedObject = intersects[0].object as THREE.Mesh;
+        draggedObject.userData.isDragging = true;
+        
+        if (raycaster.ray.intersectPlane(plane, intersection)) {
+          offset.copy(intersection).sub(draggedObject.position);
+          previousMousePosition.copy(draggedObject.position);
         }
+      }
     };
 
     const onPointerMove = (event: MouseEvent | TouchEvent) => {
-        const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
-        const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+      const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+      const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
 
-        mouse.x = (clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+      mouse.x = (clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(clientY / window.innerHeight) * 2 + 1;
 
-        if (draggedObject) {
-            raycaster.setFromCamera(mouse, camera);
-            if (raycaster.ray.intersectPlane(plane, intersection)) {
-                draggedObject.position.copy(intersection.sub(offset));
-                
-                const deltaMove = new THREE.Vector3().copy(draggedObject.position).sub(previousMousePosition);
-                draggedObject.userData.velocity.copy(deltaMove).multiplyScalar(settings.dragSpeed);
-                
-                previousMousePosition.copy(draggedObject.position);
-            }
+      if (draggedObject) {
+        raycaster.setFromCamera(mouse, camera);
+        if (raycaster.ray.intersectPlane(plane, intersection)) {
+          draggedObject.position.copy(intersection.sub(offset));
+          
+          const deltaMove = new THREE.Vector3().copy(draggedObject.position).sub(previousMousePosition);
+          draggedObject.userData.velocity.copy(deltaMove).multiplyScalar(settings.dragSpeed);
+          
+          previousMousePosition.copy(draggedObject.position);
         }
+      }
     };
 
     const onPointerUp = () => {
-        if (draggedObject) {
-            draggedObject.userData.isDragging = false;
-            draggedObject = null;
-        }
+      if (draggedObject) {
+        draggedObject.userData.isDragging = false;
+        draggedObject = null;
+      }
     };
 
     window.addEventListener('mousedown', onPointerDown);
@@ -228,14 +249,14 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     window.addEventListener('touchend', onPointerUp);
 
     const handleResize = () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        bounds = calculateBounds();
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      bounds = calculateBounds();
     };
     window.addEventListener('resize', handleResize);
 
-    // 8. Animation Loop
+    // 8. OPTIMIZED Animation Loop
     let animationId: number;
     const clock = new THREE.Clock();
 
@@ -243,8 +264,10 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       animationId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
+      // Slower particle rotation for better performance
       particlesMesh.rotation.y = elapsedTime * 0.05;
 
+      // Animate lights for iridescence
       light1.position.x = Math.sin(elapsedTime * 0.7) * 20;
       light1.position.y = Math.cos(elapsedTime * 0.5) * 20;
       light2.position.x = Math.cos(elapsedTime * 0.3) * 25;
@@ -255,53 +278,63 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
         ring.rotation.y += ring.userData.rotationSpeed.y;
 
         if (!ring.userData.isDragging) {
-            ring.position.add(ring.userData.velocity);
+          // Apply velocity
+          ring.position.add(ring.userData.velocity);
 
-            // BOUNDARY CHECK
-            if (ring.position.x > bounds.x || ring.position.x < -bounds.x) {
-                ring.userData.velocity.x *= -1;
-                ring.position.x = Math.sign(ring.position.x) * bounds.x;
-            }
-            if (ring.position.y > bounds.y || ring.position.y < -bounds.y) {
-                ring.userData.velocity.y *= -1;
-                ring.position.y = Math.sign(ring.position.y) * bounds.y;
-            }
-            if (ring.position.z > bounds.z || ring.position.z < -bounds.z) {
-                ring.userData.velocity.z *= -1;
-                ring.position.z = Math.sign(ring.position.z) * bounds.z;
-            }
+          // BOUNDARY CHECK with optimized bounce
+          if (ring.position.x > bounds.x || ring.position.x < -bounds.x) {
+            ring.userData.velocity.x *= -1;
+            ring.position.x = Math.sign(ring.position.x) * bounds.x;
+          }
+          if (ring.position.y > bounds.y || ring.position.y < -bounds.y) {
+            ring.userData.velocity.y *= -1;
+            ring.position.y = Math.sign(ring.position.y) * bounds.y;
+          }
+          if (ring.position.z > bounds.z || ring.position.z < -bounds.z) {
+            ring.userData.velocity.z *= -1;
+            ring.position.z = Math.sign(ring.position.z) * bounds.z;
+          }
 
-            // COLLISION CHECK
-            for (let j = i + 1; j < rings.length; j++) {
-                const otherRing = rings[j];
-                const distance = ring.position.distanceTo(otherRing.position);
-                const minDistance = COLLISION_RADIUS * 2;
-
-                if (distance < minDistance) {
-                    const normal = new THREE.Vector3().subVectors(ring.position, otherRing.position).normalize();
-                    const overlap = minDistance - distance;
-                    const separation = normal.clone().multiplyScalar(overlap / 2);
-                    
-                    ring.position.add(separation);
-                    otherRing.position.sub(separation);
-
-                    const relativeVelocity = new THREE.Vector3().subVectors(ring.userData.velocity, otherRing.userData.velocity);
-                    const impulse = relativeVelocity.dot(normal);
-
-                    if (impulse < 0) {
-                        const bounceImpulse = normal.multiplyScalar(impulse * settings.bounceDamping);
-                        ring.userData.velocity.sub(bounceImpulse);
-                        otherRing.userData.velocity.add(bounceImpulse);
-                        
-                        ring.userData.rotationSpeed.x += (Math.random() - 0.5) * 0.05;
-                        otherRing.userData.rotationSpeed.y += (Math.random() - 0.5) * 0.05;
-                    }
-                }
-            }
+          // OPTIMIZED COLLISION CHECK - Only check nearby rings
+          const checkDistance = isMobile ? 15 : 20;
+          
+          for (let j = i + 1; j < rings.length; j++) {
+            const otherRing = rings[j];
             
-            // PHYSICS TWEAK: Higher Friction (0.990 instead of 0.998)
-            // This slows them down faster after interaction
-            ring.userData.velocity.multiplyScalar(0.990);
+            // Quick distance check before expensive collision detection
+            const quickDistance = Math.abs(ring.position.x - otherRing.position.x) + 
+                                 Math.abs(ring.position.y - otherRing.position.y) + 
+                                 Math.abs(ring.position.z - otherRing.position.z);
+            
+            if (quickDistance < checkDistance) {
+              const distance = ring.position.distanceTo(otherRing.position);
+              const minDistance = COLLISION_RADIUS * 2;
+
+              if (distance < minDistance) {
+                const normal = new THREE.Vector3().subVectors(ring.position, otherRing.position).normalize();
+                const overlap = minDistance - distance;
+                const separation = normal.clone().multiplyScalar(overlap / 2);
+                
+                ring.position.add(separation);
+                otherRing.position.sub(separation);
+
+                const relativeVelocity = new THREE.Vector3().subVectors(ring.userData.velocity, otherRing.userData.velocity);
+                const impulse = relativeVelocity.dot(normal);
+
+                if (impulse < 0) {
+                  const bounceImpulse = normal.multiplyScalar(impulse * settings.bounceDamping);
+                  ring.userData.velocity.sub(bounceImpulse);
+                  otherRing.userData.velocity.add(bounceImpulse);
+                  
+                  ring.userData.rotationSpeed.x += (Math.random() - 0.5) * 0.05;
+                  otherRing.userData.rotationSpeed.y += (Math.random() - 0.5) * 0.05;
+                }
+              }
+            }
+          }
+          
+          // OPTIMIZED friction per device
+          ring.userData.velocity.multiplyScalar(settings.friction);
         }
       });
 
