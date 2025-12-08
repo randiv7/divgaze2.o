@@ -204,3 +204,58 @@
     animation-delay: 500ms;
   }
 }
+
+/* Glassmorphism for hero elements */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text-gradient-neon {
+  background: linear-gradient(135deg, #a855f7, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+/* Mobile optimizations for hero section */
+@media (max-width: 767px) {
+  .heading-xl {
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+  
+  .body-lg {
+    font-size: 1rem;
+  }
+
+  /* Enhance text readability on mobile */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .heading-xl {
+    font-size: 3.5rem;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Performance optimization - hide canvas during transitions */
+canvas {
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}

@@ -5,6 +5,7 @@ import { ArrowRight, ArrowDown } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
 import { ServiceCard } from '@/components/shared/ServiceCard';
+import { FluidHero } from '@/components/shared/FluidHero';
 
 const services = [
   {
@@ -47,38 +48,28 @@ const Index = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section id="home" className="section-full relative overflow-hidden font-inter pt-20">
-        <div className="noise-overlay" />
-        
-        {/* Abstract Shapes */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            className="absolute top-1/4 right-[10%] w-64 h-64 border border-border rounded-full opacity-30"
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute bottom-1/4 left-[5%] w-96 h-96 border border-border opacity-20"
-            style={{ transform: 'rotate(45deg)' }}
-            animate={{ rotate: [45, 55, 45] }}
-            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute top-1/3 left-1/4 w-32 h-32 bg-secondary opacity-50"
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </div>
+      {/* Hero Section with 3D Background */}
+      <section 
+        id="home" 
+        className="relative overflow-hidden font-inter pt-20 min-h-screen flex flex-col justify-center" 
+        style={{ background: '#000000' }}
+      >
+        {/* 3D Canvas Background - Contained to hero section only */}
+        <FluidHero />
 
-        <div className="container-premium relative z-10">
+        {/* Content Overlay */}
+        <div className="container-premium relative py-20 md:py-32" style={{ zIndex: 10 }}>
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
-            <h1 className="heading-xl max-w-4xl">
-              Divgaze — <span className="opacity-60">Beyond Boundaries.</span>
+            <div className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wide text-purple-300 uppercase glass-panel rounded-full">
+              Beyond Boundaries
+            </div>
+            
+            <h1 className="heading-xl max-w-4xl text-white mb-4">
+              Divgaze — <span className="text-gradient-neon">Creative, AI & Systems.</span>
             </h1>
           </motion.div>
 
@@ -86,12 +77,12 @@ const Index = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="mt-8"
+            className="mt-6 md:mt-8"
           >
-            <p className="body-lg max-w-2xl text-muted-foreground">
-              A creative, AI, and systems studio.
-              <br />
+            <p className="body-lg max-w-2xl text-gray-300 leading-relaxed">
               We craft content, intelligence, and digital systems for modern brands.
+              <br className="hidden md:block" />
+              Experience the future of digital transformation.
             </p>
           </motion.div>
 
@@ -99,31 +90,41 @@ const Index = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="mt-12 flex flex-col sm:flex-row gap-4"
+            className="mt-8 md:mt-12 flex flex-col sm:flex-row gap-4"
           >
-            <button onClick={scrollToServices} className="btn-primary">
-              Explore Services
-              <ArrowRight className="ml-2 w-5 h-5" />
+            <button 
+              onClick={scrollToServices} 
+              className="group relative px-6 md:px-8 py-3 md:py-4 bg-white text-black font-semibold rounded-full overflow-hidden transition-transform hover:scale-105 active:scale-95"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Explore Services
+                <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
             </button>
-            <a href="#about" className="btn-secondary">
+            
+            <Link
+              to="/about"
+              className="px-6 md:px-8 py-3 md:py-4 glass-panel text-white font-medium rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 justify-center"
+            >
               About Us
-            </a>
+            </Link>
           </motion.div>
 
-          {/* Scroll Indicator */}
+          {/* Scroll Indicator - Hidden on mobile */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.6 }}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2"
+            className="hidden md:block absolute bottom-12 left-1/2 -translate-x-1/2 cursor-pointer"
+            onClick={scrollToServices}
           >
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="cursor-pointer"
-              onClick={scrollToServices}
+              className="opacity-50 hover:opacity-100 transition-opacity"
             >
-              <ArrowDown className="w-6 h-6 text-muted-foreground" />
+              <ArrowDown className="w-6 h-6 text-white" />
             </motion.div>
           </motion.div>
         </div>
