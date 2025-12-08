@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { createGlassTextMaterial } from './glassTextMaterial';
 
 interface FluidHeroProps {
   className?: string;
@@ -8,6 +9,54 @@ interface FluidHeroProps {
 export const FluidHero = ({ className = '' }: FluidHeroProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [shouldRender, setShouldRender] = useState(true);
+
+  // Helper function to create "Divgaze" text mesh
+  const createDivgazeText = (isMobile: boolean, isTablet: boolean) => {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d')!;
+    
+    // INCREASED font sizes for bigger text
+    const fontSize = isMobile ? 80 : isTablet ? 140 : 200;
+    const fontWeight = 'bold';
+    const fontFamily = 'Inter, sans-serif';
+    
+    context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+    const textWidth = context.measureText('Divgaze').width;
+    
+    // Set canvas size
+    canvas.width = textWidth + 40;
+    canvas.height = fontSize * 1.5;
+    
+    // Re-apply font after canvas resize
+    context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillStyle = 'white';
+    context.fillText('Divgaze', canvas.width / 2, canvas.height / 2);
+    
+    // Create texture from canvas
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    
+    // Create plane geometry for text - INCREASED sizes
+    const aspect = canvas.width / canvas.height;
+    const planeWidth = isMobile ? 16 : isTablet ? 26 : 36;
+    const planeHeight = planeWidth / aspect;
+    
+    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+    
+    // Create glass material for text
+    const material = createGlassTextMaterial(isMobile);
+    material.map = texture;
+    material.alphaMap = texture;
+    
+    const textMesh = new THREE.Mesh(geometry, material);
+    
+    // Make text non-interactive
+    textMesh.userData.isText = true; // Mark as text for raycaster exclusion
+    
+    return textMesh;
+  };
 
   useEffect(() => {
     // 1. OPTIMIZED Device detection & Config
@@ -150,7 +199,12 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       rings.push(ring);
     }
 
-    // 5. OPTIMIZED Particles
+    // 5. Create 3D "Divgaze" Glass Text
+    const textMesh = createDivgazeText(isMobile, isTablet);
+    textMesh.position.set(0, 0, 0); // Center of scene
+    scene.add(textMesh);
+
+    // 6. OPTIMIZED Particles
     const particlesGeometry = new THREE.BufferGeometry();
     const posArray = new Float32Array(settings.particlesCount * 3);
     for (let i = 0; i < settings.particlesCount * 3; i++) {
@@ -167,7 +221,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
-    // 6. Lights (Original Settings Preserved)
+    // 7. Lights (Original Settings Preserved)
     const light1 = new THREE.PointLight(0x00ffff, 2, 50);
     light1.position.set(10, 10, 10);
     scene.add(light1);
@@ -183,7 +237,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
     scene.add(ambientLight);
 
-    // 7. OPTIMIZED Interaction
+    // 8. OPTIMIZED Interaction
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
@@ -256,7 +310,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     };
     window.addEventListener('resize', handleResize);
 
-    // 8. OPTIMIZED Animation Loop
+    // 9. OPTIMIZED Animation Loop
     let animationId: number;
     const clock = new THREE.Clock();
 
@@ -377,7 +431,13 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     <div
       ref={containerRef}
       className={`absolute top-0 left-0 w-full h-full cursor-grab active:cursor-grabbing ${className}`}
-      style={{ zIndex: 0 }}
+      style={{ 
+        zIndex: 0,
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none'
+      }}
     />
   );
 };
