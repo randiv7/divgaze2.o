@@ -23,7 +23,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
 
     if (!containerRef.current) return;
 
-    // Settings
+    // General Settings
     const settings = {
       ringSegments: isMobile ? 32 : isTablet ? 64 : 100,
       particlesCount: isMobile ? 1000 : isTablet ? 3000 : 5000,
@@ -33,6 +33,15 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       dragSpeed: 1.5, 
       bounceDamping: 0.8,
     };
+
+    // Geometry Scaling (The Plan Implementation)
+    const geometryConfig = {
+      radius: isMobile ? 2.0 : isTablet ? 2.8 : 3.5,
+      tube: isMobile ? 0.8 : isTablet ? 1.0 : 1.2,
+    };
+
+    // Calculated Collision Radius (Visual Radius + Tube Thickness)
+    const COLLISION_RADIUS = geometryConfig.radius + geometryConfig.tube;
 
     // 2. Scene Setup
     const scene = new THREE.Scene();
@@ -51,40 +60,50 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     containerRef.current.appendChild(renderer.domElement);
 
-    // Calculate Screen Boundaries
-    const vFOV = THREE.MathUtils.degToRad(camera.fov);
-    const visibleHeight = 2 * Math.tan(vFOV / 2) * settings.cameraZ;
-    const visibleWidth = visibleHeight * camera.aspect;
-    
-    const bounds = {
-        x: visibleWidth / 2 - 4,
-        y: visibleHeight / 2 - 4,
+    // Calculate Screen Boundaries (Dynamic based on ring size)
+    const calculateBounds = () => {
+      const vFOV = THREE.MathUtils.degToRad(camera.fov);
+      const visibleHeight = 2 * Math.tan(vFOV / 2) * settings.cameraZ;
+      const visibleWidth = visibleHeight * camera.aspect;
+      
+      // We subtract the collision radius so the ring edge hits the screen edge, not the center
+      return {
+        x: visibleWidth / 2 - (COLLISION_RADIUS + 0.5),
+        y: visibleHeight / 2 - (COLLISION_RADIUS + 0.5),
         z: 15
+      };
     };
 
-    // 3. Material (Glass - UPDATED)
+    let bounds = calculateBounds();
+
+    // 3. Material (Glass)
     const material = new THREE.MeshPhysicalMaterial({
-      color: 0xaaccff,      // Very pale blue/white for clear glass
+      color: 0xaaccff,
       metalness: 0,
-      roughness: 0.01,      // Ultra-smooth for sharp reflections
-      transmission: 0.98,   // Near perfect transparency
-      thickness: 1.5,       // Slightly thinner feel
+      roughness: 0.01,
+      transmission: 0.98,
+      thickness: 1.5,
       clearcoat: 1.0,
-      clearcoatRoughness: 0.01, // Highly polished top layer
+      clearcoatRoughness: 0.01,
       emissive: 0x000000,
-      ior: 1.52,            // Standard glass refractive index
-      attenuationColor: new THREE.Color(0xffffff), // No internal color tinting
+      ior: 1.52,
+      attenuationColor: new THREE.Color(0xffffff),
       attenuationDistance: Infinity,
     });
 
-    // 4. Create Rings (Uniform Size)
+    // 4. Create Rings (With Scaled Geometry)
     const rings: THREE.Mesh[] = [];
-    const ringGeometry = new THREE.TorusGeometry(3.5, 1.2, 32, settings.ringSegments);
-    const COLLISION_RADIUS = 4.7;
+    const ringGeometry = new THREE.TorusGeometry(
+      geometryConfig.radius, 
+      geometryConfig.tube, 
+      32, 
+      settings.ringSegments
+    );
 
     for (let i = 0; i < settings.ringCount; i++) {
         const ring = new THREE.Mesh(ringGeometry, material);
         
+        // Random spread inside bounds
         ring.position.set(
             (Math.random() - 0.5) * (bounds.x * 1.5),
             (Math.random() - 0.5) * (bounds.y * 1.5),
@@ -214,11 +233,8 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         
-        const vFOV = THREE.MathUtils.degToRad(camera.fov);
-        const height = 2 * Math.tan(vFOV / 2) * settings.cameraZ;
-        const width = height * camera.aspect;
-        bounds.x = width / 2 - 4;
-        bounds.y = height / 2 - 4;
+        // Recalculate bounds with the correct collision radius
+        bounds = calculateBounds();
     };
     window.addEventListener('resize', handleResize);
 
@@ -244,6 +260,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
         if (!ring.userData.isDragging) {
             ring.position.add(ring.userData.velocity);
 
+            // BOUNDARY CHECK (Using dynamic bounds)
             if (ring.position.x > bounds.x || ring.position.x < -bounds.x) {
                 ring.userData.velocity.x *= -1;
                 ring.position.x = Math.sign(ring.position.x) * bounds.x;
@@ -257,6 +274,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
                 ring.position.z = Math.sign(ring.position.z) * bounds.z;
             }
 
+            // COLLISION CHECK (Using dynamic radius)
             for (let j = i + 1; j < rings.length; j++) {
                 const otherRing = rings[j];
                 const distance = ring.position.distanceTo(otherRing.position);
