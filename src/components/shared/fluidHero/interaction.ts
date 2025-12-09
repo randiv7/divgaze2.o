@@ -28,6 +28,11 @@ export const setupInteraction = (
     if (intersects.length > 0) {
       draggedObject = intersects[0].object as THREE.Mesh;
       draggedObject.userData.isDragging = true;
+      
+      // NEW: Break out of orbit when user grabs ring
+      draggedObject.userData.isOrbiting = false;
+      draggedObject.userData.returnToOrbitForce = 0;
+      draggedObject.userData.lastInteractionTime = Date.now();
 
       if (raycaster.ray.intersectPlane(plane, intersection)) {
         offset.copy(intersection).sub(draggedObject.position);
@@ -61,6 +66,8 @@ export const setupInteraction = (
   const onPointerUp = () => {
     if (draggedObject) {
       draggedObject.userData.isDragging = false;
+      // NEW: Mark interaction time when released
+      draggedObject.userData.lastInteractionTime = Date.now();
       draggedObject = null;
     }
   };

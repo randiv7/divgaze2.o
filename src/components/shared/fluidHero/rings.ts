@@ -29,37 +29,36 @@ export const createRings = (
     settings.ringSegments
   );
 
-  const getInitialPosition = (index: number, total: number) => {
-    const angle = (index / total) * Math.PI * 2;
-    const radius = bounds.x * 0.6;
-
-    return {
-      x: Math.cos(angle) * radius * (0.5 + Math.random() * 0.5),
-      y: Math.sin(angle) * radius * (0.5 + Math.random() * 0.5),
-      z: (Math.random() - 0.5) * 10,
-    };
-  };
-
   for (let i = 0; i < settings.ringCount; i++) {
     const ring = new THREE.Mesh(ringGeometry, material);
 
-    const pos = getInitialPosition(i, settings.ringCount);
-    ring.position.set(pos.x, pos.y, pos.z);
+    // Start rings in orbital positions
+    const orbitAngle = (i / settings.ringCount) * Math.PI * 2;
+    const ovalRadiusX = window.innerWidth < 768 ? 15 : window.innerWidth < 1024 ? 20 : 25;
+    const ovalRadiusY = ovalRadiusX * 0.6;
+
+    ring.position.set(
+      Math.cos(orbitAngle) * ovalRadiusX,
+      Math.sin(orbitAngle) * ovalRadiusY,
+      0
+    );
 
     ring.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
 
     ring.userData = {
-      velocity: new THREE.Vector3(
-        (Math.random() - 0.5) * settings.initialVelocity,
-        (Math.random() - 0.5) * settings.initialVelocity,
-        (Math.random() - 0.5) * settings.initialVelocity
-      ),
+      velocity: new THREE.Vector3(0, 0, 0),
       rotationSpeed: new THREE.Vector3(
         (Math.random() - 0.5) * 0.01,
         (Math.random() - 0.5) * 0.01,
         0
       ),
       isDragging: false,
+      // NEW: Orbital properties
+      orbitAngle: orbitAngle,
+      orbitSpeed: 0.0005,
+      isOrbiting: true,
+      returnToOrbitForce: 1.0, // Start in full orbit mode
+      lastInteractionTime: 0,
     };
 
     scene.add(ring);
