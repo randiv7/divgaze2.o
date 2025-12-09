@@ -20,13 +20,14 @@ export interface Settings {
   ringEmissiveIntensity: number;
   toneMappingExposure: number;
   antialias: boolean;
+  orbitSpeed: number; // NEW: orbit speed per device
 }
 
 export const getResponsiveSettings = (width: number): Settings => {
   if (width < 768) {
     // Mobile
     return {
-      ringCount: 8, // CHANGED: was 4, now 8
+      ringCount: 8,
       ringSegments: 32,
       particlesCount: 1500,
       pixelRatio: Math.min(window.devicePixelRatio, 1.5),
@@ -47,11 +48,12 @@ export const getResponsiveSettings = (width: number): Settings => {
       ringEmissiveIntensity: 0.2,
       toneMappingExposure: 1.2,
       antialias: false,
+      orbitSpeed: 0.003, // ~35 seconds per orbit
     };
   } else if (width < 1024) {
     // Tablet
     return {
-      ringCount: 8, // CHANGED: was 5, now 8
+      ringCount: 8,
       ringSegments: 48,
       particlesCount: 2000,
       pixelRatio: Math.min(window.devicePixelRatio, 2),
@@ -72,11 +74,12 @@ export const getResponsiveSettings = (width: number): Settings => {
       ringEmissiveIntensity: 0,
       toneMappingExposure: 1.1,
       antialias: true,
+      orbitSpeed: 0.004, // ~26 seconds per orbit
     };
   } else {
     // Desktop
     return {
-      ringCount: 8, // UNCHANGED: already 8
+      ringCount: 8,
       ringSegments: 80,
       particlesCount: 4000,
       pixelRatio: Math.min(window.devicePixelRatio, 2),
@@ -97,6 +100,7 @@ export const getResponsiveSettings = (width: number): Settings => {
       ringEmissiveIntensity: 0,
       toneMappingExposure: 1.0,
       antialias: true,
+      orbitSpeed: 0.005, // ~21 seconds per orbit
     };
   }
 };

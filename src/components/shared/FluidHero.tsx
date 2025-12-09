@@ -79,6 +79,11 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       bounds.y = newBounds.y;
       bounds.z = newBounds.z;
       
+      // Update ring orbit speeds on resize
+      rings.forEach(ring => {
+        ring.userData.orbitSpeed = newSettings.orbitSpeed;
+      });
+      
       // Update particle material
       particlesMaterial.size = newSettings.particleSize;
       particlesMaterial.opacity = newSettings.particleOpacity;

@@ -53,12 +53,9 @@ export const createRings = (
         0
       ),
       isDragging: false,
-      // NEW: Orbital properties
       orbitAngle: orbitAngle,
-      orbitSpeed: 0.0005,
-      isOrbiting: true,
-      returnToOrbitForce: 1.0, // Start in full orbit mode
-      lastInteractionTime: 0,
+      orbitSpeed: settings.orbitSpeed, // Use settings orbit speed
+      isOrbiting: true, // Start in orbit mode
     };
 
     scene.add(ring);
