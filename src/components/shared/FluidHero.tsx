@@ -59,21 +59,20 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
   };
 
   useEffect(() => {
-    // FIXED: Only disable for reduced motion preference
+    // 1. OPTIMIZED Device detection & Config
+    const isMobile = window.innerWidth < 768;
+    const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+    const isLowEnd = navigator.hardwareConcurrency ? navigator.hardwareConcurrency <= 4 : false;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (prefersReducedMotion) {
+    if ((isMobile && isLowEnd) || prefersReducedMotion) {
       setShouldRender(false);
       return;
     }
 
     if (!containerRef.current) return;
 
-    // Device detection for optimization
-    const isMobile = window.innerWidth < 768;
-    const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-
-    // OPTIMIZED Settings based on device
+    // OPTIMIZED Settings based on analysis
     const settings = {
       // Ring count: Mobile 2, Tablet 4, Desktop 8
       ringCount: isMobile ? 2 : isTablet ? 4 : 8,
@@ -99,7 +98,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
 
     const COLLISION_RADIUS = geometryConfig.radius + geometryConfig.tube;
 
-    // Scene Setup
+    // 2. Scene Setup
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x050510, isMobile ? 0.002 : 0.0015);
 
@@ -131,7 +130,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
 
     let bounds = calculateBounds();
 
-    // Glass Material (Original Color Preserved)
+    // 3. Glass Material (Original Color Preserved)
     const material = new THREE.MeshPhysicalMaterial({
       color: 0xaaccff,
       metalness: 0,
@@ -146,7 +145,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       attenuationDistance: Infinity,
     });
 
-    // Create Rings with OPTIMIZED distribution
+    // 4. Create Rings with OPTIMIZED distribution
     const rings: THREE.Mesh[] = [];
     const ringGeometry = new THREE.TorusGeometry(
       geometryConfig.radius, 
@@ -155,7 +154,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       settings.ringSegments
     );
 
-    // OPTIMIZED initial positioning for rings
+    // OPTIMIZED initial positioning for 8 rings (desktop)
     const getInitialPosition = (index: number, total: number) => {
       // Create a more balanced distribution
       const angle = (index / total) * Math.PI * 2;
@@ -200,12 +199,12 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       rings.push(ring);
     }
 
-    // Create 3D "Divgaze" Glass Text
+    // 5. Create 3D "Divgaze" Glass Text
     const textMesh = createDivgazeText(isMobile, isTablet);
     textMesh.position.set(0, 0, 0); // Center of scene
     scene.add(textMesh);
 
-    // OPTIMIZED Particles
+    // 6. OPTIMIZED Particles
     const particlesGeometry = new THREE.BufferGeometry();
     const posArray = new Float32Array(settings.particlesCount * 3);
     for (let i = 0; i < settings.particlesCount * 3; i++) {
@@ -222,7 +221,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
-    // Lights (Original Settings Preserved)
+    // 7. Lights (Original Settings Preserved)
     const light1 = new THREE.PointLight(0x00ffff, 2, 50);
     light1.position.set(10, 10, 10);
     scene.add(light1);
@@ -238,7 +237,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
     scene.add(ambientLight);
 
-    // OPTIMIZED Interaction
+    // 8. OPTIMIZED Interaction
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
@@ -311,7 +310,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     };
     window.addEventListener('resize', handleResize);
 
-    // OPTIMIZED Animation Loop
+    // 9. OPTIMIZED Animation Loop
     let animationId: number;
     const clock = new THREE.Clock();
 
@@ -423,11 +422,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
   if (!shouldRender) {
     return (
       <div className={`absolute top-0 left-0 w-full h-full ${className}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/30 via-black to-blue-600/30 flex items-center justify-center">
-          <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tight">
-            Divgaze
-          </h1>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
       </div>
     );
   }
