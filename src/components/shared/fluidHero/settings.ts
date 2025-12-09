@@ -26,7 +26,7 @@ export const getResponsiveSettings = (width: number): Settings => {
   if (width < 768) {
     // Mobile
     return {
-      ringCount: 4,
+      ringCount: 8, // CHANGED: was 4, now 8
       ringSegments: 32,
       particlesCount: 1500,
       pixelRatio: Math.min(window.devicePixelRatio, 1.5),
@@ -51,7 +51,7 @@ export const getResponsiveSettings = (width: number): Settings => {
   } else if (width < 1024) {
     // Tablet
     return {
-      ringCount: 5,
+      ringCount: 8, // CHANGED: was 5, now 8
       ringSegments: 48,
       particlesCount: 2000,
       pixelRatio: Math.min(window.devicePixelRatio, 2),
@@ -76,7 +76,7 @@ export const getResponsiveSettings = (width: number): Settings => {
   } else {
     // Desktop
     return {
-      ringCount: 8,
+      ringCount: 8, // UNCHANGED: already 8
       ringSegments: 80,
       particlesCount: 4000,
       pixelRatio: Math.min(window.devicePixelRatio, 2),
