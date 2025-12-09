@@ -45,7 +45,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     
     const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
     
-    // Create glass material for text
+    // Create glass material for text with MOBILE OPTIMIZATION
     const material = createGlassTextMaterial(isMobile);
     material.map = texture;
     material.alphaMap = texture;
@@ -53,44 +53,42 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     const textMesh = new THREE.Mesh(geometry, material);
     
     // Make text non-interactive
-    textMesh.userData.isText = true; // Mark as text for raycaster exclusion
+    textMesh.userData.isText = true;
     
     return textMesh;
   };
 
   useEffect(() => {
-    // 1. OPTIMIZED Device detection & Config
-    const isMobile = window.innerWidth < 768;
-    const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-    const isLowEnd = navigator.hardwareConcurrency ? navigator.hardwareConcurrency <= 4 : false;
+    // Only disable for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if ((isMobile && isLowEnd) || prefersReducedMotion) {
+    if (prefersReducedMotion) {
       setShouldRender(false);
       return;
     }
 
     if (!containerRef.current) return;
 
-    // OPTIMIZED Settings based on analysis
+    // Device detection for optimization
+    const isMobile = window.innerWidth < 768;
+    const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+
+    // OPTIMIZED Settings - INCREASED mobile rings for visibility
     const settings = {
-      // Ring count: Mobile 2, Tablet 4, Desktop 8
-      ringCount: isMobile ? 2 : isTablet ? 4 : 8,
-      // Segments: Reduced for better performance
+      // FIXED: Ring count increased on mobile for better visibility
+      ringCount: isMobile ? 4 : isTablet ? 4 : 8,
       ringSegments: isMobile ? 24 : isTablet ? 48 : 80,
-      // Particles: Optimized for each device
-      particlesCount: isMobile ? 800 : isTablet ? 2000 : 4000,
-      // Pixel ratio: Capped for mobile
+      // FIXED: Increased particles on mobile for visibility
+      particlesCount: isMobile ? 1500 : isTablet ? 2000 : 4000,
       pixelRatio: isMobile ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2),
       cameraZ: isMobile ? 55 : isTablet ? 45 : 35,
-      // OPTIMIZED Physics
       dragSpeed: isMobile ? 0.8 : isTablet ? 1.0 : 1.2,
       bounceDamping: isMobile ? 0.6 : isTablet ? 0.55 : 0.5,
       friction: isMobile ? 0.985 : isTablet ? 0.988 : 0.990,
       initialVelocity: isMobile ? 0.006 : isTablet ? 0.007 : 0.008,
     };
 
-    // OPTIMIZED Geometry - Smaller rings for better performance and fit
+    // OPTIMIZED Geometry
     const geometryConfig = {
       radius: isMobile ? 1.8 : isTablet ? 2.5 : 3.2,
       tube: isMobile ? 0.7 : isTablet ? 0.9 : 1.0,
@@ -98,7 +96,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
 
     const COLLISION_RADIUS = geometryConfig.radius + geometryConfig.tube;
 
-    // 2. Scene Setup
+    // Scene Setup
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x050510, isMobile ? 0.002 : 0.0015);
 
@@ -106,13 +104,14 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     camera.position.z = settings.cameraZ;
 
     const renderer = new THREE.WebGLRenderer({ 
-      antialias: !isMobile, // No antialiasing on mobile for performance
+      antialias: !isMobile,
       alpha: true,
       powerPreference: 'high-performance'
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(settings.pixelRatio);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = isMobile ? 1.2 : 1.0; // FIXED: Brighter on mobile
     containerRef.current.appendChild(renderer.domElement);
 
     // Calculate Screen Boundaries
@@ -130,22 +129,25 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
 
     let bounds = calculateBounds();
 
-    // 3. Glass Material (Original Color Preserved)
+    // FIXED: Glass Material with mobile-specific adjustments
     const material = new THREE.MeshPhysicalMaterial({
       color: 0xaaccff,
       metalness: 0,
       roughness: 0.01,
-      transmission: 0.98,
-      thickness: 1.5,
+      // FIXED: Less transparent on mobile for better visibility
+      transmission: isMobile ? 0.85 : 0.98,
+      thickness: isMobile ? 2.0 : 1.5,
       clearcoat: 1.0,
       clearcoatRoughness: 0.01,
-      emissive: 0x000000,
+      // FIXED: Add emissive glow on mobile
+      emissive: isMobile ? 0x113355 : 0x000000,
+      emissiveIntensity: isMobile ? 0.2 : 0,
       ior: 1.52,
       attenuationColor: new THREE.Color(0xffffff),
       attenuationDistance: Infinity,
     });
 
-    // 4. Create Rings with OPTIMIZED distribution
+    // Create Rings
     const rings: THREE.Mesh[] = [];
     const ringGeometry = new THREE.TorusGeometry(
       geometryConfig.radius, 
@@ -154,9 +156,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       settings.ringSegments
     );
 
-    // OPTIMIZED initial positioning for 8 rings (desktop)
     const getInitialPosition = (index: number, total: number) => {
-      // Create a more balanced distribution
       const angle = (index / total) * Math.PI * 2;
       const radius = bounds.x * 0.6;
       
@@ -170,7 +170,6 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     for (let i = 0; i < settings.ringCount; i++) {
       const ring = new THREE.Mesh(ringGeometry, material);
       
-      // Better initial distribution
       const pos = getInitialPosition(i, settings.ringCount);
       ring.position.set(pos.x, pos.y, pos.z);
 
@@ -181,7 +180,6 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       );
 
       ring.userData = {
-        // OPTIMIZED velocity based on device
         velocity: new THREE.Vector3(
           (Math.random() - 0.5) * settings.initialVelocity,
           (Math.random() - 0.5) * settings.initialVelocity,
@@ -199,12 +197,12 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       rings.push(ring);
     }
 
-    // 5. Create 3D "Divgaze" Glass Text
+    // Create 3D "Divgaze" Glass Text
     const textMesh = createDivgazeText(isMobile, isTablet);
-    textMesh.position.set(0, 0, 0); // Center of scene
+    textMesh.position.set(0, 0, 0);
     scene.add(textMesh);
 
-    // 6. OPTIMIZED Particles
+    // FIXED: More visible particles
     const particlesGeometry = new THREE.BufferGeometry();
     const posArray = new Float32Array(settings.particlesCount * 3);
     for (let i = 0; i < settings.particlesCount * 3; i++) {
@@ -212,32 +210,33 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     }
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.05,
+      size: isMobile ? 0.08 : 0.05, // FIXED: Larger particles on mobile
       color: 0xffffff,
       transparent: true,
-      opacity: 0.5,
+      opacity: isMobile ? 0.7 : 0.5, // FIXED: More opaque on mobile
       blending: THREE.AdditiveBlending,
     });
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
-    // 7. Lights (Original Settings Preserved)
-    const light1 = new THREE.PointLight(0x00ffff, 2, 50);
+    // FIXED: Brighter lights for mobile visibility
+    const light1 = new THREE.PointLight(0x00ffff, isMobile ? 3 : 2, 50);
     light1.position.set(10, 10, 10);
     scene.add(light1);
 
-    const light2 = new THREE.PointLight(0xff00ff, 2, 50);
+    const light2 = new THREE.PointLight(0xff00ff, isMobile ? 3 : 2, 50);
     light2.position.set(-10, -10, 10);
     scene.add(light2);
 
-    const light3 = new THREE.PointLight(0x5500ff, 2, 60);
+    const light3 = new THREE.PointLight(0x5500ff, isMobile ? 3 : 2, 60);
     light3.position.set(0, 0, 20);
     scene.add(light3);
 
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    // FIXED: Brighter ambient light on mobile
+    const ambientLight = new THREE.AmbientLight(0x404040, isMobile ? 1.0 : 0.5);
     scene.add(ambientLight);
 
-    // 8. OPTIMIZED Interaction
+    // Interaction
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
@@ -310,7 +309,7 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
     };
     window.addEventListener('resize', handleResize);
 
-    // 9. OPTIMIZED Animation Loop
+    // Animation Loop
     let animationId: number;
     const clock = new THREE.Clock();
 
@@ -318,10 +317,8 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
       animationId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Slower particle rotation for better performance
       particlesMesh.rotation.y = elapsedTime * 0.05;
 
-      // Animate lights for iridescence
       light1.position.x = Math.sin(elapsedTime * 0.7) * 20;
       light1.position.y = Math.cos(elapsedTime * 0.5) * 20;
       light2.position.x = Math.cos(elapsedTime * 0.3) * 25;
@@ -332,10 +329,8 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
         ring.rotation.y += ring.userData.rotationSpeed.y;
 
         if (!ring.userData.isDragging) {
-          // Apply velocity
           ring.position.add(ring.userData.velocity);
 
-          // BOUNDARY CHECK with optimized bounce
           if (ring.position.x > bounds.x || ring.position.x < -bounds.x) {
             ring.userData.velocity.x *= -1;
             ring.position.x = Math.sign(ring.position.x) * bounds.x;
@@ -349,13 +344,11 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
             ring.position.z = Math.sign(ring.position.z) * bounds.z;
           }
 
-          // OPTIMIZED COLLISION CHECK - Only check nearby rings
           const checkDistance = isMobile ? 15 : 20;
           
           for (let j = i + 1; j < rings.length; j++) {
             const otherRing = rings[j];
             
-            // Quick distance check before expensive collision detection
             const quickDistance = Math.abs(ring.position.x - otherRing.position.x) + 
                                  Math.abs(ring.position.y - otherRing.position.y) + 
                                  Math.abs(ring.position.z - otherRing.position.z);
@@ -387,7 +380,6 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
             }
           }
           
-          // OPTIMIZED friction per device
           ring.userData.velocity.multiplyScalar(settings.friction);
         }
       });
@@ -422,7 +414,11 @@ export const FluidHero = ({ className = '' }: FluidHeroProps) => {
   if (!shouldRender) {
     return (
       <div className={`absolute top-0 left-0 w-full h-full ${className}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/40 via-black to-blue-600/40 flex items-center justify-center">
+          <h1 className="text-5xl md:text-8xl font-bold text-white tracking-tight">
+            Divgaze
+          </h1>
+        </div>
       </div>
     );
   }
