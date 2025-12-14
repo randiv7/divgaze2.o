@@ -259,3 +259,16 @@ canvas {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
+/* Add to @layer utilities section */
+@layer utilities {
+  /* Prevent initial content flash */
+  #root {
+    min-height: 100vh;
+    background: #000;
+  }
+
+  /* Smooth loader transitions */
+  .will-change-transform {
+    will-change: transform;
+  }
+}
