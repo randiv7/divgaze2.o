@@ -138,4 +138,4 @@ export const createAnimationLoop = (
       cancelAnimationFrame(animationId);
     },
   };
-};
+}; 
