@@ -10,7 +10,7 @@ const services = [
     title: 'Creative Lab',
     description: 'AI content, social media, campaigns, video editing.',
     href: '/creative-lab',
-    image: '/mon.png',
+    image: '/mon1.png',
   },
   {
     title: 'AI Solutions',
