@@ -4,6 +4,7 @@ import { Layout } from '@/components/layout/Layout';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
 import { ServiceCard } from '@/components/shared/ServiceCard';
 import { FluidHero } from '@/components/shared/FluidHero';
+import { ContactSection } from '@/components/shared/ContactSection';
 
 const services = [
   {
@@ -73,51 +74,44 @@ const Index = () => {
       </section>
 
       {/* About Preview Section */}
-      <section id="about" className="section-full bg-secondary font-inter">
+      <section id="about" className="section-full bg-black text-white font-inter">
         <div className="container-premium">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
+          <div className="max-w-4xl mx-auto">
             <AnimatedSection>
-              <span className="text-sm font-medium text-muted-foreground tracking-widest uppercase mb-4 block">
+              <span className="text-sm font-medium text-white/60 tracking-widest uppercase mb-4 block">
                 About Us
               </span>
               <h2 className="heading-lg mb-8">
                 Built for the <span className="opacity-60">future.</span>
               </h2>
-              <p className="body-md text-muted-foreground mb-6">
-                Divgaze is where creativity meets technology. We're a multidisciplinary studio 
-                that believes in pushing boundaries—whether through compelling content, 
-                intelligent AI systems, or robust digital infrastructure.
-              </p>
-              <p className="body-md text-muted-foreground mb-8">
-                Our team combines artistic vision with technical excellence to deliver 
-                solutions that don't just meet expectations—they redefine them.
-              </p>
-            </AnimatedSection>
-
-            <AnimatedSection delay={0.2} direction="right">
-              <div className="relative aspect-square bg-primary/5 flex items-center justify-center">
-                <div className="absolute inset-4 border border-border" />
-                <div className="absolute inset-8 bg-secondary" />
-                <span className="relative text-8xl font-bold opacity-10">D</span>
+              <div className="space-y-6 text-white/80 body-md">
+                <p>
+                  We're Divgaze - a passionate, creative tech startup based in Sri Lanka, 
+                  with deep roots extending to Melbourne, Australia.
+                </p>
+                <p>
+                  At our core, we're a team of curious builders and bold thinkers who believe 
+                  in creating digital experiences that truly make a difference. We're not just 
+                  here to deliver services, we're here to partner with you, challenge ideas, 
+                  and bring visions to life.
+                </p>
+                <p>
+                  What sets us apart? We put our clients first — always. We dive deep into 
+                  every project, explore every angle, and give our absolute best to craft 
+                  solutions that are smart, scalable, and meaningful.
+                </p>
+                <p>
+                  We embrace experimentation. We welcome risk. Because we know real innovation 
+                  happens outside the comfort zone.
+                </p>
               </div>
             </AnimatedSection>
           </div>
         </div>
       </section>
 
-      {/* Contact Preview Section */}
-      <section id="contact" className="section-full bg-primary text-primary-foreground font-inter">
-        <div className="container-premium text-center">
-          <AnimatedSection>
-            <h2 className="heading-lg mb-6">
-              Let's build <span className="opacity-60">beyond boundaries.</span>
-            </h2>
-            <p className="body-lg text-primary-foreground/70 max-w-2xl mx-auto mb-12">
-              Ready to transform your ideas into reality? Let's start a conversation.
-            </p>
-          </AnimatedSection>
-        </div>
-      </section>
+      {/* Contact Section */}
+      <ContactSection />
     </Layout>
   );
 };
