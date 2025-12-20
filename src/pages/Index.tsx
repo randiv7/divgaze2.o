@@ -16,11 +16,13 @@ const services = [
     title: 'AI Solutions',
     description: 'Agentic workflows, generative AI, ML systems.',
     href: '/ai-solutions',
+    image: '/ais1.png',
   },
   {
     title: 'Web Dev & Systems',
     description: 'E-commerce, POS systems, custom web applications.',
     href: '/web-dev',
+    image: '/web1.png',
   },
 ];
 
