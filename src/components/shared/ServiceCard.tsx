@@ -8,9 +8,10 @@ interface ServiceCardProps {
   description: string;
   href: string;
   index: number;
+  image?: string;
 }
 
-export const ServiceCard = ({ title, description, href, index }: ServiceCardProps) => {
+export const ServiceCard = ({ title, description, href, index, image }: ServiceCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isTapped, setIsTapped] = useState(false);
 
@@ -48,20 +49,32 @@ export const ServiceCard = ({ title, description, href, index }: ServiceCardProp
             backgroundColor: isHovered || isTapped ? 'hsl(var(--primary))' : 'hsl(var(--secondary))',
           }}
         >
-          {/* Number */}
-          <span
-            className={`absolute top-8 left-8 text-7xl md:text-9xl font-bold opacity-10 transition-colors duration-300 ${
-              isHovered || isTapped ? 'text-primary-foreground' : 'text-foreground'
-            }`}
-          >
-            0{index + 1}
-          </span>
+          {/* Background Image */}
+          {image && (
+            <div className="absolute inset-0 overflow-hidden">
+              <img
+                src={image}
+                alt={title}
+                className="w-full h-full object-cover transition-transform duration-500"
+                style={{
+                  transform: isHovered || isTapped ? 'scale(1.1)' : 'scale(1)',
+                }}
+              />
+              {/* Dark overlay on hover */}
+              <div 
+                className="absolute inset-0 bg-black transition-opacity duration-500"
+                style={{
+                  opacity: isHovered || isTapped ? 0.7 : 0,
+                }}
+              />
+            </div>
+          )}
 
           {/* Content */}
           <div className="relative z-10">
             <h3
               className={`heading-md mb-4 transition-colors duration-300 ${
-                isHovered || isTapped ? 'text-primary-foreground' : 'text-foreground'
+                image ? 'text-primary-foreground' : (isHovered || isTapped ? 'text-primary-foreground' : 'text-foreground')
               }`}
             >
               {title}
