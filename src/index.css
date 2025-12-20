@@ -272,3 +272,8 @@ canvas {
     will-change: transform;
   }
 }
+body {
+  @apply bg-background text-foreground antialiased;
+  font-family: 'Inter', sans-serif;
+  cursor: none;  /* <-- ADD THIS LINE */
+}

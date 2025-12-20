@@ -42,7 +42,7 @@ export const ServiceCard = ({ title, description, href, index, image }: ServiceC
         className="block"
       >
         <motion.div
-          className="relative overflow-hidden bg-secondary p-8 md:p-12 min-h-[300px] md:min-h-[400px] flex flex-col justify-end"
+          className="clickable-media relative overflow-hidden bg-secondary p-8 md:p-12 min-h-[300px] md:min-h-[400px] flex flex-col justify-end"
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.4 }}
           style={{
