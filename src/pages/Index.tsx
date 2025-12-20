@@ -61,7 +61,7 @@ const Index = () => {
             </h2>
           </AnimatedSection>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-x-10 gap-y-12 lg:gap-x-14">
             {services.map((service, index) => (
               <ServiceCard key={service.title} {...service} index={index} />
             ))}
