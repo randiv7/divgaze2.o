@@ -5,6 +5,7 @@ import { AnimatedSection } from '@/components/shared/AnimatedSection';
 import { ServiceCard } from '@/components/shared/ServiceCard';
 import { FluidHero } from '@/components/shared/FluidHero';
 import { ContactSection } from '@/components/shared/ContactSection';
+import { AboutSection } from '@/components/shared/AboutSection';
 
 const services = [
   {
@@ -73,42 +74,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* About Preview Section */}
-      <section id="about" className="section-full bg-black text-white font-inter">
-        <div className="container-premium">
-          <div className="max-w-4xl mx-auto">
-            <AnimatedSection>
-              <span className="text-sm font-medium text-white/60 tracking-widest uppercase mb-4 block">
-                About Us
-              </span>
-              <h2 className="heading-lg mb-8">
-                Built for the <span className="opacity-60">future.</span>
-              </h2>
-              <div className="space-y-6 text-white/80 body-md">
-                <p>
-                  We're Divgaze - a passionate, creative tech startup based in Sri Lanka, 
-                  with deep roots extending to Melbourne, Australia.
-                </p>
-                <p>
-                  At our core, we're a team of curious builders and bold thinkers who believe 
-                  in creating digital experiences that truly make a difference. We're not just 
-                  here to deliver services, we're here to partner with you, challenge ideas, 
-                  and bring visions to life.
-                </p>
-                <p>
-                  What sets us apart? We put our clients first — always. We dive deep into 
-                  every project, explore every angle, and give our absolute best to craft 
-                  solutions that are smart, scalable, and meaningful.
-                </p>
-                <p>
-                  We embrace experimentation. We welcome risk. Because we know real innovation 
-                  happens outside the comfort zone.
-                </p>
-              </div>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
+      {/* About Section with PhilosophySection Style */}
+      <AboutSection />
 
       {/* Contact Section */}
       <ContactSection />
