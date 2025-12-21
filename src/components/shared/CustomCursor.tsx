@@ -2,20 +2,32 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
 export const CustomCursor: React.FC = () => {
-  const cursorRef = useRef<HTMLDivElement>(null);
   const followerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [hoverText, setHoverText] = useState("");
   const [isDarkBg, setIsDarkBg] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isInExcludedArea, setIsInExcludedArea] = useState(false);
 
   useEffect(() => {
+    // Check if device is touch-enabled (mobile/tablet)
+    const checkTouchDevice = () => {
+      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    };
+    checkTouchDevice();
+
+    // Don't setup cursor on touch devices
+    if (isTouchDevice) return;
+
     const moveCursor = (e: MouseEvent) => {
-      gsap.to(cursorRef.current, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.1,
-      });
+      const element = document.elementFromPoint(e.clientX, e.clientY);
+      
+      // Check if cursor is in navigation or footer
+      const isInNav = element?.closest('nav') !== null;
+      const isInFooter = element?.closest('footer') !== null;
+      setIsInExcludedArea(isInNav || isInFooter);
+
       gsap.to(followerRef.current, {
         x: e.clientX,
         y: e.clientY,
@@ -24,7 +36,6 @@ export const CustomCursor: React.FC = () => {
       });
 
       // Check background color at cursor position
-      const element = document.elementFromPoint(e.clientX, e.clientY);
       if (element) {
         const section = element.closest('section');
         
@@ -39,14 +50,33 @@ export const CustomCursor: React.FC = () => {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.closest('button') || target.closest('a') || target.closest('.clickable-media')) {
+      
+      // Check if we're in nav or footer - don't activate hover state
+      const isInNav = target.closest('nav') !== null;
+      const isInFooter = target.closest('footer') !== null;
+      
+      if (isInNav || isInFooter) {
+        setIsHovering(false);
+        setHoverText("");
+        return;
+      }
+      
+      // Check for clickable media first
+      if (target.closest('.clickable-media')) {
         setIsHovering(true);
-        if (target.closest('.clickable-media')) {
-          setHoverText("VIEW");
-        } else {
-          setHoverText("");
-        }
-      } else {
+        setHoverText("VIEW");
+      } 
+      // Check for buttons
+      else if (target.closest('button')) {
+        setIsHovering(true);
+        setHoverText("CLICK");
+      }
+      // Check for links
+      else if (target.closest('a')) {
+        setIsHovering(true);
+        setHoverText("CLICK");
+      } 
+      else {
         setIsHovering(false);
         setHoverText("");
       }
@@ -66,32 +96,34 @@ export const CustomCursor: React.FC = () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, []);
+  }, [isTouchDevice]);
+
+  // Don't render on touch devices (mobile/tablet)
+  if (isTouchDevice) return null;
 
   // Dynamic colors based on background
-  const cursorColor = isDarkBg ? 'bg-white' : 'bg-black';
-  const followerBorder = isDarkBg ? 'border-white/20' : 'border-black/20';
   const followerHoverBg = isDarkBg ? 'bg-white' : 'bg-black';
   const followerHoverText = isDarkBg ? 'text-black' : 'text-white';
+  const followerTint = isDarkBg ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
 
   return (
-    <>
-      <div 
-        ref={cursorRef} 
-        className={`fixed top-0 left-0 w-2 h-2 ${cursorColor} rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference transition-colors duration-300`}
-      />
-      <div 
-        ref={followerRef} 
-        className={`fixed top-0 left-0 rounded-full border pointer-events-none z-[9998] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center transition-all duration-300 ease-out
-          ${isHovering ? `w-20 h-20 ${followerHoverBg} ${followerHoverText} border-none` : `w-10 h-10 ${followerBorder} bg-transparent`}
-          ${isClicking ? 'scale-75' : 'scale-100'}
-        `}
-      >
-        {isHovering && hoverText && (
-          <span className="text-[10px] font-bold tracking-widest leading-none translate-y-px">{hoverText}</span>
-        )}
-      </div>
-    </>
+    <div 
+      ref={followerRef} 
+      className={`fixed top-0 left-0 rounded-full pointer-events-none z-[9998] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center transition-all duration-300 ease-out
+        ${isHovering ? `w-28 h-28 ${followerHoverBg} ${followerHoverText}` : `w-16 h-16`}
+        ${isClicking ? 'scale-75' : 'scale-100'}
+        ${isInExcludedArea ? 'opacity-0' : 'opacity-100'}
+      `}
+      style={{
+        backdropFilter: 'blur(3px)',
+        WebkitBackdropFilter: 'blur(3px)',
+        backgroundColor: isHovering ? undefined : followerTint
+      }}
+    >
+      {isHovering && hoverText && (
+        <span className="text-xs font-bold tracking-widest leading-none">{hoverText}</span>
+      )}
+    </div>
   );
 };
 

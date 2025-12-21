@@ -277,3 +277,10 @@ body {
   font-family: 'Inter', sans-serif;
   cursor: none;  /* <-- ADD THIS LINE */
 }
+/* Show default cursor in nav and footer */
+nav,
+nav *,
+footer,
+footer * {
+  cursor: auto !important;
+}
