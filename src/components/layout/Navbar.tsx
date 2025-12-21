@@ -55,14 +55,25 @@ export const Navbar = () => {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-inter ${isScrolled ? 'bg-background/95 backdrop-blur-md border-b border-border' : 'bg-transparent'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-inter ${
+      isScrolled 
+        ? 'bg-white/40 backdrop-blur-xl border-b border-black/5' 
+        : 'bg-transparent'
+    }`}>
       <nav className="container-premium">
-        <div className="flex items-center justify-between h-20">
-          <Link to="/" className={`text-xl font-bold tracking-tight transition-colors ${!isScrolled && isHomePage ? 'text-white' : 'text-foreground'}`}>
-            Divgaze
+        <div className="flex items-center justify-between h-24 px-4 md:px-8">
+          {/* Logo Image */}
+          <Link to="/" className="transition-opacity hover:opacity-80 py-4">
+            <img 
+              src="/logo.png" 
+              alt="Divgaze Logo" 
+              className={`h-12 md:h-14 w-auto transition-all duration-300 ${
+                !isScrolled && isHomePage ? 'brightness-0 invert' : ''
+              }`}
+            />
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-12">
             <a href="#home" onClick={(e) => handleNavClick(e, 'home')} className={navLinkClass(isScrolled, isHomePage)}>
               Home
             </a>
@@ -75,9 +86,9 @@ export const Navbar = () => {
 
               <AnimatePresence>
                 {isServicesOpen && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.2 }} className="absolute top-full left-0 mt-2 w-48 bg-background border border-border shadow-xl">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.2 }} className="absolute top-full left-0 mt-2 w-48 bg-white/90 backdrop-blur-xl border border-black/5 shadow-xl rounded-lg overflow-hidden">
                     {services.map((service) => (
-                      <Link key={service.name} to={service.href} className="block px-4 py-3 text-sm font-medium transition-colors hover:bg-secondary">
+                      <Link key={service.name} to={service.href} className="block px-4 py-3 text-sm font-medium transition-colors hover:bg-black/5">
                         {service.name}
                       </Link>
                     ))}
@@ -103,7 +114,7 @@ export const Navbar = () => {
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="md:hidden bg-background border-b border-border">
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="md:hidden bg-white/90 backdrop-blur-xl border-b border-black/5">
             <div className="container-premium py-8 flex flex-col gap-6">
               <a href="#home" onClick={(e) => handleNavClick(e, 'home')} className="text-lg font-medium">
                 Home
