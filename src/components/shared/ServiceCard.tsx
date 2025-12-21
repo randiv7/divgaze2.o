@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ServiceCardProps {
   title: string;
@@ -13,90 +16,72 @@ interface ServiceCardProps {
 
 export const ServiceCard = ({ title, description, href, index, image }: ServiceCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isTapped, setIsTapped] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const handleTap = (e: React.MouseEvent) => {
-    if (window.innerWidth < 768) {
-      if (!isTapped) {
-        e.preventDefault();
-        setIsTapped(true);
-      }
-    }
-  };
+  // Card Staggered Entrance Animation with GSAP
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(cardRef.current, {
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: "top 92%",
+          toggleActions: "play none none none",
+        },
+        y: 60,
+        opacity: 0,
+        scale: 0.98,
+        duration: 1.2,
+        ease: "expo.out",
+        delay: (index % 3) * 0.1, // Stagger Delay by Index
+      });
+    }, cardRef);
+
+    return () => ctx.revert();
+  }, [index]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.15 }}
-    >
+    <div ref={cardRef} className="group cursor-pointer">
       <Link
         to={href}
-        onClick={handleTap}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          setIsTapped(false);
-        }}
+        onMouseLeave={() => setIsHovered(false)}
         className="block"
       >
-        <motion.div
-          className="clickable-media relative overflow-hidden bg-secondary p-8 md:p-12 min-h-[300px] md:min-h-[400px] flex flex-col justify-end"
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.4 }}
-          style={{
-            backgroundColor: isHovered || isTapped ? 'hsl(var(--primary))' : 'hsl(var(--secondary))',
-          }}
-        >
-          {/* Background Image */}
+        {/* Card with Lift, Shadow Expansion, and Rounded Corners */}
+        <div className="relative w-full min-h-[300px] md:min-h-[400px] rounded-[24px] overflow-hidden mb-6 bg-secondary clickable-media transition-all duration-700 ease-out group-hover:-translate-y-3 group-hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.12)]">
+          {/* Background Image with Scale on Hover */}
           {image && (
             <div className="absolute inset-0 overflow-hidden">
               <img
                 src={image}
                 alt={title}
-                className="w-full h-full object-cover transition-transform duration-500"
-                style={{
-                  transform: isHovered || isTapped ? 'scale(1.1)' : 'scale(1)',
-                }}
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] will-change-transform"
               />
-              {/* Dark overlay on hover */}
-              <div 
-                className="absolute inset-0 bg-black transition-opacity duration-500"
-                style={{
-                  opacity: isHovered || isTapped ? 0.7 : 0,
-                }}
-              />
+              {/* Overlay Fade on Hover */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
             </div>
           )}
+        </div>
 
-          {/* Content */}
-          <div className="relative z-10">
-            <h3
-              className={`heading-md mb-4 transition-colors duration-300 ${
-                image ? 'text-primary-foreground' : (isHovered || isTapped ? 'text-primary-foreground' : 'text-foreground')
-              }`}
-            >
-              {title}
-            </h3>
-
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{
-                opacity: isHovered || isTapped ? 1 : 0,
-                height: isHovered || isTapped ? 'auto' : 0,
-              }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden"
-            >
-              <p className="text-primary-foreground/80 mb-4">{description}</p>
-              <span className="inline-flex items-center gap-2 text-primary-foreground font-medium">
-                Learn more <ArrowRight className="w-4 h-4" />
+        {/* Title and Description Below Card */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            {/* Title Slide on Hover with Underline Expand */}
+            <h3 className="relative text-2xl md:text-3xl font-medium tracking-tight text-foreground group-hover:translate-x-2 transition-transform duration-500 flex items-center gap-2">
+              <span className="relative">
+                {title}
+                {/* Underline Expand Animation */}
+                <span className="absolute left-0 bottom-0 w-0 h-px bg-black transition-all duration-500 group-hover:w-full" />
               </span>
-            </motion.div>
+              {/* Arrow Icon Entrance */}
+              <ArrowUpRight 
+                className="w-6 h-6 opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 text-black/40" 
+              />
+            </h3>
           </div>
-        </motion.div>
+          <p className="text-muted-foreground text-sm">{description}</p>
+        </div>
       </Link>
-    </motion.div>
+    </div>
   );
 };
