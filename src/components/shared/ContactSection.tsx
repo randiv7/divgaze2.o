@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ArrowRight, Mail, Calendar } from 'lucide-react';
-import { AnimatedSection } from '@/components/shared/AnimatedSection';
+import { AnimatedSection } from './AnimatedSection';
+import { ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export const ContactSection = () => {
@@ -24,66 +24,43 @@ export const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-    toast({
-      title: 'Message sent!',
-      description: "We'll get back to you within 24 hours.",
-    });
+      toast({
+        title: "Message sent successfully!",
+        description: "We'll get back to you as soon as possible.",
+      });
 
-    setFormData({ name: '', email: '', service: '', message: '' });
-    setIsSubmitting(false);
+      setFormData({
+        name: '',
+        email: '',
+        service: '',
+        message: '',
+      });
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <section id="contact" className="section-full relative overflow-hidden font-inter bg-background">
-      <div className="noise-overlay" />
-
-      <div className="container-premium relative z-10">
-        <div className="grid md:grid-cols-2 gap-16">
-          {/* Left Column - Info */}
+    <section id="contact" className="section-full bg-background font-inter">
+      <div className="container-premium">
+        <div className="max-w-2xl mx-auto">
           <AnimatedSection>
-            <span className="text-sm font-medium text-muted-foreground tracking-widest uppercase mb-4 block">
-              Contact
+            <span className="text-sm font-medium text-muted-foreground tracking-widest uppercase mb-4 block text-center">
+              Get in Touch
             </span>
-            <h1 className="heading-xl mb-8">
-              Let's <span className="opacity-60">talk.</span>
-            </h1>
-            <p className="body-lg text-muted-foreground mb-12">
-              Have a project in mind? We'd love to hear about it. 
-              Fill out the form or reach out directly.
-            </p>
+            <h2 className="heading-lg text-center mb-12">
+              Let's build something <span className="opacity-60">great.</span>
+            </h2>
 
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-secondary flex items-center justify-center">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Email us at</p>
-                  <a href="mailto:hello@divgaze.com" className="font-medium hover:opacity-70 transition-opacity">
-                    hello@divgaze.com
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-secondary flex items-center justify-center">
-                  <Calendar className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Schedule a call</p>
-                  <a href="#" className="font-medium hover:opacity-70 transition-opacity">
-                    Book a meeting
-                  </a>
-                </div>
-              </div>
-            </div>
-          </AnimatedSection>
-
-          {/* Right Column - Form */}
-          <AnimatedSection delay={0.2} direction="right">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -157,10 +134,12 @@ export const ContactSection = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="group relative px-8 py-4 bg-primary text-primary-foreground rounded-full overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed font-medium border-0"
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                  <span className="relative z-10">
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                  </span>
+                  <div className="absolute inset-0 bg-cyan-400 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                 </button>
               </div>
             </form>
