@@ -54,9 +54,9 @@ const Index = () => {
         <FluidHero />
       </section>
 
-      {/* Services Section */}
+      {/* Services Section - Maximum Space Usage */}
       <section id="services" className="section-full bg-background font-inter">
-        <div className="container-premium">
+        <div className="mx-auto w-full max-w-[1600px] px-3 md:px-4">
           <AnimatedSection>
             <span className="text-sm font-medium text-muted-foreground tracking-widest uppercase mb-4 block">
               Our Services
@@ -66,7 +66,7 @@ const Index = () => {
             </h2>
           </AnimatedSection>
 
-          <div className="grid md:grid-cols-3 gap-x-10 gap-y-12 lg:gap-x-14">
+          <div className="grid md:grid-cols-3 gap-3 md:gap-4">
             {services.map((service, index) => (
               <ServiceCard key={service.title} {...service} index={index} />
             ))}
