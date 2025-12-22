@@ -203,6 +203,17 @@
   .animation-delay-500 {
     animation-delay: 500ms;
   }
+
+  /* Prevent initial content flash */
+  #root {
+    min-height: 100vh;
+    background: #000;
+  }
+
+  /* Smooth loader transitions */
+  .will-change-transform {
+    will-change: transform;
+  }
 }
 
 /* Glassmorphism for hero elements */
@@ -219,6 +230,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
 /* Mobile optimizations for hero section */
 @media (max-width: 767px) {
   .heading-xl {
@@ -259,24 +271,7 @@ canvas {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
-/* Add to @layer utilities section */
-@layer utilities {
-  /* Prevent initial content flash */
-  #root {
-    min-height: 100vh;
-    background: #000;
-  }
 
-  /* Smooth loader transitions */
-  .will-change-transform {
-    will-change: transform;
-  }
-}
-body {
-  @apply bg-background text-foreground antialiased;
-  font-family: 'Inter', sans-serif;
-  cursor: none;  /* <-- ADD THIS LINE */
-}
 /* Show default cursor in nav and footer */
 nav,
 nav *,

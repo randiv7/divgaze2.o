@@ -36,12 +36,13 @@ const App = () => {
 
   return (
     <div className={`transition-opacity duration-500 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
-      <CustomCursor />
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            {/* CustomCursor moved inside BrowserRouter so it can access useLocation */}
+            <CustomCursor />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/creative-lab" element={<CreativeLab />} />

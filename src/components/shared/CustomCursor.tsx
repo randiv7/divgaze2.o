@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 
 export const CustomCursor: React.FC = () => {
+  const location = useLocation();
   const followerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
@@ -10,6 +12,22 @@ export const CustomCursor: React.FC = () => {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [isInExcludedArea, setIsInExcludedArea] = useState(false);
 
+  // Only show custom cursor on landing page
+  const isLandingPage = location.pathname === '/';
+
+  // Control body cursor style based on page
+  useEffect(() => {
+    if (isLandingPage && !isTouchDevice) {
+      document.body.style.cursor = 'none';
+    } else {
+      document.body.style.cursor = 'auto';
+    }
+
+    return () => {
+      document.body.style.cursor = 'auto';
+    };
+  }, [isLandingPage, isTouchDevice]);
+
   useEffect(() => {
     // Check if device is touch-enabled (mobile/tablet)
     const checkTouchDevice = () => {
@@ -17,8 +35,8 @@ export const CustomCursor: React.FC = () => {
     };
     checkTouchDevice();
 
-    // Don't setup cursor on touch devices
-    if (isTouchDevice) return;
+    // Don't setup cursor on touch devices or non-landing pages
+    if (isTouchDevice || !isLandingPage) return;
 
     const moveCursor = (e: MouseEvent) => {
       const element = document.elementFromPoint(e.clientX, e.clientY);
@@ -61,20 +79,10 @@ export const CustomCursor: React.FC = () => {
         return;
       }
       
-      // Check for clickable media first
+      // Check for clickable media only
       if (target.closest('.clickable-media')) {
         setIsHovering(true);
         setHoverText("VIEW");
-      } 
-      // Check for buttons
-      else if (target.closest('button')) {
-        setIsHovering(true);
-        setHoverText("CLICK");
-      }
-      // Check for links
-      else if (target.closest('a')) {
-        setIsHovering(true);
-        setHoverText("CLICK");
       } 
       else {
         setIsHovering(false);
@@ -96,15 +104,15 @@ export const CustomCursor: React.FC = () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isTouchDevice]);
+  }, [isTouchDevice, isLandingPage]);
 
-  // Don't render on touch devices (mobile/tablet)
-  if (isTouchDevice) return null;
+  // Don't render on touch devices or non-landing pages
+  if (isTouchDevice || !isLandingPage) return null;
 
   // Dynamic colors based on background
   const followerHoverBg = isDarkBg ? 'bg-white' : 'bg-black';
   const followerHoverText = isDarkBg ? 'text-black' : 'text-white';
-  const followerTint = isDarkBg ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+  const followerTint = isDarkBg ? 'rgba(255, 255, 255, 0.18)' : 'rgba(0, 0, 0, 0.08)';
 
   return (
     <div 
