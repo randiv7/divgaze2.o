@@ -139,7 +139,7 @@ export const ContactSection = () => {
                   <span className="relative z-10">
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                   </span>
-                  <div className="absolute inset-0 bg-cyan-400 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gray-400 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                 </button>
               </div>
             </form>
