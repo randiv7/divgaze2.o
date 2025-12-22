@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
 import { ServiceCard } from '@/components/shared/ServiceCard';
-import { KineticHero } from '@/components/shared/KineticHero'; // CHANGED
+import { KineticHero } from '@/components/shared/KineticHero'; // CHANGED FROM FluidHero
 import { ContactSection } from '@/components/shared/ContactSection';
 import { AboutSection } from '@/components/shared/AboutSection';
 
@@ -44,14 +44,14 @@ const Index = () => {
 
   return (
     <Layout>
-      {/* Hero Section with Kinetic Particles */}
+      {/* Hero Section with Kinetic Particle Text */}
       <section 
         id="home" 
         className="relative overflow-hidden font-inter pt-20 min-h-screen flex flex-col justify-center" 
         style={{ background: '#000000' }}
       >
-        {/* Kinetic Particle System */}
-        <KineticHero /> {/* CHANGED */}
+        {/* Kinetic Text Animation with Background Rings */}
+        <KineticHero /> {/* CHANGED FROM FluidHero */}
       </section>
 
       {/* Services Section - Maximum Space Usage */}
