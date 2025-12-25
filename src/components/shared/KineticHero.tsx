@@ -53,7 +53,7 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       
       return {
         WORDS: ["DIVGAZE"],
-        PARTICLE_DENSITY: 5,
+        PARTICLE_DENSITY: isMobileView ? 3 : 5,
         MOUSE_RADIUS: isMobileView ? 100 : 80,
         STAY_DURATION: isMobileView ? 8000 : 10000,
         TRANSITION_DURATION: isMobileView ? 800 : 1000,
