@@ -53,7 +53,7 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       
       return {
         WORDS: ["DIVGAZE"],
-        PARTICLE_DENSITY: isMobileView ? 2 : 5,
+        PARTICLE_DENSITY: isMobileView ? 3 : 5,
         MOUSE_RADIUS: isMobileView ? 100 : 80,
         STAY_DURATION: isMobileView ? 8000 : 10000,
         TRANSITION_DURATION: isMobileView ? 800 : 1000,
@@ -100,18 +100,18 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
 
         const friction = 0.9;
 
-        // Mouse/Touch Interaction (Repulsion) - DISABLED ON MOBILE
-        if (!isMobile) {
-          const dx = mouse.x - this.x;
-          const dy = mouse.y - this.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < config.MOUSE_RADIUS) {
-            const force = (config.MOUSE_RADIUS - distance) / config.MOUSE_RADIUS;
-            const angle = Math.atan2(dy, dx);
-            this.vx -= Math.cos(angle) * force * 5;
-            this.vy -= Math.sin(angle) * force * 5;
-          }
+        // Mouse/Touch Interaction (Repulsion)
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < config.MOUSE_RADIUS) {
+          const force = (config.MOUSE_RADIUS - distance) / config.MOUSE_RADIUS;
+          const angle = Math.atan2(dy, dx);
+          // Mobile tap gets stronger bounce
+          const forceMultiplier = (isMobile && isTouch) ? 8 : 5;
+          this.vx -= Math.cos(angle) * force * forceMultiplier;
+          this.vy -= Math.sin(angle) * force * forceMultiplier;
         }
 
         // Move to Target (Morphing)
@@ -152,10 +152,8 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       }
     };
 
-    // Touch/Mouse interaction - ONLY TRACK ON DESKTOP
+    // Touch/Mouse interaction
     const handlePointerMove = (e: MouseEvent | TouchEvent) => {
-      if (isMobile) return; // Don't track on mobile
-      
       if (e.type.startsWith('touch')) {
         isTouch = true;
         const touch = (e as TouchEvent).touches[0];
@@ -168,8 +166,6 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
     };
 
     const handlePointerEnd = () => {
-      if (isMobile) return; // Don't track on mobile
-      
       // On touch devices, clear mouse position after touch ends
       if (isTouch) {
         mouse.x = -1000;
@@ -178,8 +174,6 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
     };
 
     const handleMouseLeave = () => {
-      if (isMobile) return; // Don't track on mobile
-      
       if (!isTouch) {
         mouse.x = -1000;
         mouse.y = -1000;
