@@ -260,9 +260,8 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
         updateTextLayout(config.WORDS[currentWordIndex]);
       }
 
-      // Clear with trail effect
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-      ctx.fillRect(0, 0, width, height);
+      // Clear canvas to show stars behind
+      ctx.clearRect(0, 0, width, height);
 
       particles.forEach(p => {
         p.update();
@@ -310,7 +309,7 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
   }, []);
 
   return (
-    <div ref={containerRef} className={`absolute inset-0 bg-black ${className}`}>
+    <div ref={containerRef} className={`absolute inset-0 ${className}`}>
       <canvas 
         ref={canvasRef} 
         className="absolute inset-0 w-full h-full touch-none z-10"

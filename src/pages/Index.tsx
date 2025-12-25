@@ -3,9 +3,10 @@ import { useLocation } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
 import { ServiceCard } from '@/components/shared/ServiceCard';
-import { KineticHero } from '@/components/shared/KineticHero'; // CHANGED FROM FluidHero
+import { KineticHero } from '@/components/shared/KineticHero';
 import { ContactSection } from '@/components/shared/ContactSection';
 import { AboutSection } from '@/components/shared/AboutSection';
+import StarField from '@/components/shared/StarField'; // NEW IMPORT
 
 const services = [
   {
@@ -50,8 +51,11 @@ const Index = () => {
         className="relative overflow-hidden font-inter pt-20 min-h-screen flex flex-col justify-center" 
         style={{ background: '#000000' }}
       >
-        {/* Kinetic Text Animation with Background Rings */}
-        <KineticHero /> {/* CHANGED FROM FluidHero */}
+        {/* Star Field Background - z-0 */}
+        <StarField />
+        
+        {/* Kinetic Text Animation - z-10 */}
+        <KineticHero />
       </section>
 
       {/* Services Section - Maximum Space Usage */}
