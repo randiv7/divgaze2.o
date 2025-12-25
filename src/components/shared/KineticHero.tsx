@@ -193,19 +193,19 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       
       if (width < 480) {
         // Small mobile (portrait phones)
-        fontSize = Math.min(width / (text.length * 0.55), 60);
+        fontSize = 60;
       } else if (width < 768) {
         // Large mobile (landscape phones)
-        fontSize = Math.min(width / (text.length * 0.6), 80);
+        fontSize = 80;
       } else if (width < 1024) {
         // Tablet
-        fontSize = Math.min(width / (text.length * 0.65), 120);
+        fontSize = 120;
       } else if (width < 1440) {
         // Small desktop
-        fontSize = Math.min(width / (text.length * 0.7), 160);
+        fontSize = 160;
       } else {
         // Large desktop
-        fontSize = Math.min(width / (text.length * 0.7), 200);
+        fontSize = 200;
       }
 
       bCtx.fillStyle = '#000000';
