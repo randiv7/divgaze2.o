@@ -35,7 +35,7 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       ctx.font = `700 ${fontSize}px 'Syncopate', sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('Creative', canvas.width / 2, canvas.height / 2);
+      ctx.fillText('DIVGAZE', canvas.width / 2, canvas.height / 2);
       
       return;
     }
@@ -52,13 +52,13 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
       
       return {
-        WORDS: ["Creative", "Visionary", "Beyond"],
-        PARTICLE_DENSITY: isMobileView ? 8 : isTablet ? 6 : 5,
+        WORDS: ["DIVGAZE"],
+        PARTICLE_DENSITY: 5,
         MOUSE_RADIUS: isMobileView ? 60 : 80,
         STAY_DURATION: isMobileView ? 8000 : 10000,
         TRANSITION_DURATION: isMobileView ? 800 : 1000,
-        PARTICLE_SIZE_BASE: isMobileView ? 2 : 1.5,
-        EASE_RANGE: isMobileView ? [0.04, 0.06] : [0.03, 0.06],
+        PARTICLE_SIZE_BASE: 1.5,
+        EASE_RANGE: [0.03, 0.06],
       };
     };
 
@@ -310,13 +310,14 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
   }, []);
 
   return (
-    <div ref={containerRef} className={`absolute inset-0 ${className}`}>
+    <div ref={containerRef} className={`absolute inset-0 bg-black ${className}`}>
       <canvas 
         ref={canvasRef} 
-        className="block touch-none"
+        className="absolute inset-0 w-full h-full touch-none z-10"
         style={{
           WebkitTapHighlightColor: 'transparent',
-          touchAction: 'pan-y pinch-zoom'
+          touchAction: 'pan-y pinch-zoom',
+          background: 'transparent'
         }}
       />
     </div>
