@@ -54,7 +54,7 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       return {
         WORDS: ["DIVGAZE"],
         PARTICLE_DENSITY: 5,
-        MOUSE_RADIUS: isMobileView ? 60 : 80,
+        MOUSE_RADIUS: isMobileView ? 100 : 80,
         STAY_DURATION: isMobileView ? 8000 : 10000,
         TRANSITION_DURATION: isMobileView ? 800 : 1000,
         PARTICLE_SIZE_BASE: 1.5,
@@ -108,8 +108,10 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
         if (distance < config.MOUSE_RADIUS) {
           const force = (config.MOUSE_RADIUS - distance) / config.MOUSE_RADIUS;
           const angle = Math.atan2(dy, dx);
-          this.vx -= Math.cos(angle) * force * 5;
-          this.vy -= Math.sin(angle) * force * 5;
+          // Mobile tap gets stronger bounce
+          const forceMultiplier = (isMobile && isTouch) ? 8 : 5;
+          this.vx -= Math.cos(angle) * force * forceMultiplier;
+          this.vy -= Math.sin(angle) * force * forceMultiplier;
         }
 
         // Move to Target (Morphing)
