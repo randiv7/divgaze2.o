@@ -8,14 +8,33 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
     // Check if mobile/tablet (< 1024px)
     const checkMobile = () => window.innerWidth < 1024;
     setIsMobile(checkMobile());
 
+    // Wait for Syncopate font to load before doing anything
+    const loadFont = async () => {
+      try {
+        await document.fonts.load('700 16px Syncopate');
+        setFontLoaded(true);
+      } catch (error) {
+        console.error('Font loading failed:', error);
+        setFontLoaded(true); // Proceed anyway
+      }
+    };
+
+    loadFont();
+  }, []);
+
+  useEffect(() => {
+    // Don't run if font not loaded
+    if (!fontLoaded) return;
+
     // If mobile/tablet, don't run animation
-    if (checkMobile()) {
+    if (isMobile) {
       return;
     }
 
@@ -273,10 +292,8 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       animate();
     };
 
-    // Wait for font to load
-    document.fonts.ready.then(() => {
-      init();
-    });
+    // Font is already loaded, start immediately
+    init();
 
     // Add event listeners
     window.addEventListener('resize', resize);
@@ -294,7 +311,16 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       window.removeEventListener('touchend', handlePointerEnd);
       window.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, []);
+  }, [fontLoaded, isMobile]);
+
+  // Don't render anything until font is loaded
+  if (!fontLoaded) {
+    return (
+      <div className={`absolute inset-0 flex items-center justify-center ${className}`}>
+        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+      </div>
+    );
+  }
 
   // Render static text for mobile/tablet
   if (isMobile) {
