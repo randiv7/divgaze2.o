@@ -39,27 +39,21 @@ export const MemberCard: React.FC<MemberCardProps> = ({ member, index = 0 }) => 
           />
         )}
         
-        {/* Overlay Content */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 transition-transform duration-500">
-          {/* Role - Visible by default, moves UP on hover */}
-          <div className="overflow-hidden mb-3">
-            <p className="font-mono text-sm md:text-base uppercase tracking-widest text-white transition-transform duration-500 group-hover:-translate-y-2">
-              {member.role}
-            </p>
-          </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex flex-col justify-end pb-8 px-6 md:pb-12 md:px-8 transition-all duration-500">
           
-          {/* Name - Hidden by default, appears FROM BELOW on hover */}
-          <div className="overflow-hidden">
-            <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-tight text-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 delay-100">
-              {member.name}
-            </h3>
-          </div>
+          <p className="font-mono text-xs md:text-sm uppercase tracking-wider text-white mb-3 leading-none whitespace-nowrap transition-all duration-500 group-hover:-translate-y-2 group-hover:opacity-80">
+            {member.role}
+          </p>
+          
+          <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight text-white leading-tight max-w-[200px] opacity-0 translate-y-8 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-75">
+            {member.name}
+          </h3>
+          
         </div>
         
         <div className="absolute inset-0 border border-white/0 group-hover:border-white/20 transition-all duration-700"></div>
       </div>
 
-      {/* Expanded Modal */}
       {isExpanded && (
         <div 
           className="fixed inset-0 z-[100] transition-all duration-700 ease-out flex items-center justify-center opacity-100 pointer-events-auto"
@@ -79,7 +73,6 @@ export const MemberCard: React.FC<MemberCardProps> = ({ member, index = 0 }) => 
               Close [X]
             </button>
 
-            {/* Image Section */}
             <div className="w-full md:w-2/5 h-[40%] md:h-full p-4 md:p-6 lg:p-12">
               <div className="relative w-full h-full overflow-hidden">
                 {member.photo && (
@@ -93,7 +86,6 @@ export const MemberCard: React.FC<MemberCardProps> = ({ member, index = 0 }) => 
               </div>
             </div>
 
-            {/* Content Section */}
             <div className="w-full md:w-3/5 h-[60%] md:h-full p-6 md:p-12 lg:p-20 flex flex-col justify-center overflow-y-auto">
               <div className="translate-y-0 opacity-100">
                 <p className="font-mono text-xs md:text-sm uppercase tracking-[0.4em] text-zinc-500 mb-4 md:mb-6">
