@@ -10,9 +10,14 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Check if mobile
-    const checkMobile = () => window.innerWidth < 768;
+    // Check if mobile/tablet (< 1024px)
+    const checkMobile = () => window.innerWidth < 1024;
     setIsMobile(checkMobile());
+
+    // If mobile/tablet, don't run animation
+    if (checkMobile()) {
+      return;
+    }
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -46,17 +51,14 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
     let particles: Particle[] = [];
     let width: number, height: number;
     
-    // Responsive Configuration
+    // Desktop Configuration
     const getConfig = () => {
-      const isMobileView = window.innerWidth < 768;
-      const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-      
       return {
         WORDS: ["DIVGAZE"],
-        PARTICLE_DENSITY: isMobileView ? 3 : 5,
-        MOUSE_RADIUS: isMobileView ? 100 : 80,
-        STAY_DURATION: isMobileView ? 8000 : 10000,
-        TRANSITION_DURATION: isMobileView ? 800 : 1000,
+        PARTICLE_DENSITY: 5,
+        MOUSE_RADIUS: 80,
+        STAY_DURATION: 10000,
+        TRANSITION_DURATION: 1000,
         PARTICLE_SIZE_BASE: 1.5,
         EASE_RANGE: [0.03, 0.06],
       };
@@ -108,8 +110,7 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
         if (distance < config.MOUSE_RADIUS) {
           const force = (config.MOUSE_RADIUS - distance) / config.MOUSE_RADIUS;
           const angle = Math.atan2(dy, dx);
-          // Mobile tap gets stronger bounce
-          const forceMultiplier = (isMobile && isTouch) ? 8 : 5;
+          const forceMultiplier = 5;
           this.vx -= Math.cos(angle) * force * forceMultiplier;
           this.vy -= Math.sin(angle) * force * forceMultiplier;
         }
@@ -138,14 +139,12 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       }
     }
 
-    // Resize handling with config update
+    // Resize handling
     const resize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
       
-      // Update config on resize
-      config = getConfig();
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 1024);
       
       if (width > 0 && height > 0) {
         updateTextLayout(config.WORDS[currentWordIndex]);
@@ -166,7 +165,6 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
     };
 
     const handlePointerEnd = () => {
-      // On touch devices, clear mouse position after touch ends
       if (isTouch) {
         mouse.x = -1000;
         mouse.y = -1000;
@@ -180,7 +178,7 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       }
     };
 
-    // Core function to calculate text positions with responsive font sizing
+    // Core function to calculate text positions
     const updateTextLayout = (text: string) => {
       if (!width || width <= 0 || !height || height <= 0) return;
 
@@ -190,23 +188,11 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       const bCtx = buffer.getContext('2d');
       if (!bCtx) return;
       
-      // Enhanced responsive font sizing
       let fontSize: number;
       
-      if (width < 480) {
-        // Small mobile (portrait phones)
-        fontSize = 60;
-      } else if (width < 768) {
-        // Large mobile (landscape phones)
-        fontSize = 80;
-      } else if (width < 1024) {
-        // Tablet
-        fontSize = 120;
-      } else if (width < 1440) {
-        // Small desktop
+      if (width < 1440) {
         fontSize = 160;
       } else {
-        // Large desktop
         fontSize = 200;
       }
 
@@ -223,7 +209,7 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       const imageData = bCtx.getImageData(0, 0, width, height).data;
       const targets: { x: number; y: number }[] = [];
 
-      // Find target coordinates with responsive density
+      // Find target coordinates
       for (let y = 0; y < height; y += config.PARTICLE_DENSITY) {
         for (let x = 0; x < width; x += config.PARTICLE_DENSITY) {
           const index = (y * width + x) * 4;
@@ -292,7 +278,7 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
       init();
     });
 
-    // Add event listeners with passive flag for better mobile performance
+    // Add event listeners
     window.addEventListener('resize', resize);
     window.addEventListener('mousemove', handlePointerMove);
     window.addEventListener('touchmove', handlePointerMove, { passive: true });
@@ -310,6 +296,21 @@ export const KineticHero = ({ className = '' }: KineticHeroProps) => {
     };
   }, []);
 
+  // Render static text for mobile/tablet
+  if (isMobile) {
+    return (
+      <div ref={containerRef} className={`absolute inset-0 flex items-center justify-center ${className}`}>
+        <h1 
+          className="text-white text-6xl sm:text-7xl md:text-8xl font-bold uppercase tracking-tight"
+          style={{ fontFamily: "'Syncopate', sans-serif", fontWeight: 700 }}
+        >
+          DIVGAZE
+        </h1>
+      </div>
+    );
+  }
+
+  // Render canvas animation for desktop
   return (
     <div ref={containerRef} className={`absolute inset-0 ${className}`}>
       <canvas 
