@@ -58,7 +58,7 @@ const Index = () => {
         <KineticHero />
       </section>
 
-      {/* Services Section - Mobile Responsive */}
+      {/* Services Section - Mobile Responsive with Better Spacing */}
       <section id="services" className="section-full bg-background font-inter">
         <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-4">
           <AnimatedSection>
@@ -70,7 +70,7 @@ const Index = () => {
             </h2>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-3 lg:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 md:gap-3 lg:gap-4">
             {services.map((service, index) => (
               <ServiceCard key={service.title} {...service} index={index} />
             ))}
