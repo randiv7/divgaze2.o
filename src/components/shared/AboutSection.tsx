@@ -51,7 +51,7 @@ export const AboutSection: React.FC = () => {
             <div className="pt-4">
               <button
                 onClick={handleButtonClick}
-                className="group relative px-8 py-4 bg-primary text-primary-foreground rounded-full overflow-hidden font-medium border-0 transition-all duration-300 hover:scale-105"
+                className="group relative px-8 py-4 bg-primary text-primary-foreground rounded-full overflow-hidden font-medium border-2 border-gray-400 transition-all duration-300 hover:scale-105"
               >
                 <span className="relative z-10">Our team</span>
                 <div className="absolute inset-0 bg-gray-400 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
