@@ -25,13 +25,15 @@ export const MemberCard: React.FC<MemberCardProps> = ({ member, index = 0 }) => 
         />
       )}
       
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex flex-col justify-end pb-8 px-6 md:pb-12 md:px-8 transition-all duration-500">
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex flex-col justify-end pb-6 px-4 sm:pb-8 sm:px-6 md:pb-12 md:px-8 transition-all duration-500">
         
-        <p className="font-mono text-xs md:text-sm uppercase tracking-wider text-white mb-3 leading-none whitespace-nowrap transition-all duration-500 group-hover:-translate-y-2 group-hover:opacity-80">
+        {/* Role - Always visible, responsive sizing */}
+        <p className="font-mono text-[10px] sm:text-xs md:text-sm uppercase tracking-wider text-white mb-2 sm:mb-3 leading-none whitespace-nowrap transition-all duration-500 group-hover:-translate-y-2 group-hover:opacity-80">
           {member.role}
         </p>
         
-        <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight text-white leading-tight max-w-[200px] opacity-0 translate-y-8 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-75">
+        {/* Name - Visible on mobile, hidden on desktop until hover */}
+        <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold uppercase tracking-tight text-white leading-tight max-w-[90%] sm:max-w-[85%] md:max-w-[200px] opacity-100 md:opacity-0 translate-y-0 md:translate-y-8 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-500 delay-75">
           {member.name}
         </h3>
         

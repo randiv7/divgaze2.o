@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
 import { MemberCard } from '@/components/team/MemberCard';
@@ -49,6 +50,11 @@ const teamMembers: TeamMember[] = [
 ];
 
 const Team = () => {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Layout>
       {/* Hero Section */}
