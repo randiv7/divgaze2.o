@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const DIVGAZE_INFO = "Divgaze is a creative tech studio pushing ideas beyond boundaries. We blend design, technology, and AI to craft future-ready digital experiences, from websites and apps to content and intelligent solutions. Based in Sri Lanka with a global vision, we don't just build products. We shape what's next.";
 
@@ -9,10 +10,6 @@ export const AboutSection: React.FC = () => {
     { id: '03', title: 'Bespoke Dev' },
     { id: '04', title: 'Content Strategy' },
   ];
-
-  const handleButtonClick = () => {
-    console.log("Our team button clicked");
-  };
 
   return (
     <section 
@@ -49,13 +46,13 @@ export const AboutSection: React.FC = () => {
 
             {/* Button */}
             <div className="pt-4">
-              <button
-                onClick={handleButtonClick}
-                className="group relative px-8 py-4 bg-primary text-primary-foreground rounded-full overflow-hidden font-medium border-2 border-gray-400 transition-all duration-300 hover:scale-105"
+              <Link
+                to="/team"
+                className="group relative inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground rounded-full overflow-hidden font-medium border-2 border-gray-400 transition-all duration-300 hover:scale-105"
               >
                 <span className="relative z-10">Our team</span>
                 <div className="absolute inset-0 bg-gray-400 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-              </button>
+              </Link>
             </div>
           </div>
           
