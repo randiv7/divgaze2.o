@@ -6,7 +6,7 @@ import { ServiceCard } from '@/components/shared/ServiceCard';
 import { KineticHero } from '@/components/shared/KineticHero';
 import { ContactSection } from '@/components/shared/ContactSection';
 import { AboutSection } from '@/components/shared/AboutSection';
-import StarField from '@/components/shared/StarField'; // NEW IMPORT
+import StarField from '@/components/shared/StarField';
 
 const services = [
   {
@@ -58,19 +58,19 @@ const Index = () => {
         <KineticHero />
       </section>
 
-      {/* Services Section - Maximum Space Usage */}
+      {/* Services Section - Mobile Responsive */}
       <section id="services" className="section-full bg-background font-inter">
-        <div className="mx-auto w-full max-w-[1600px] px-3 md:px-4">
+        <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-4">
           <AnimatedSection>
             <span className="text-sm font-medium text-muted-foreground tracking-widest uppercase mb-4 block">
               Our Services
             </span>
-            <h2 className="heading-lg max-w-3xl mb-16">
+            <h2 className="heading-lg max-w-3xl mb-8 sm:mb-12 md:mb-16">
               Three disciplines, <span className="opacity-60">one vision.</span>
             </h2>
           </AnimatedSection>
 
-          <div className="grid md:grid-cols-3 gap-3 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-3 lg:gap-4">
             {services.map((service, index) => (
               <ServiceCard key={service.title} {...service} index={index} />
             ))}
