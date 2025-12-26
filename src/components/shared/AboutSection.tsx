@@ -1,119 +1,98 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React from 'react';
 
-gsap.registerPlugin(ScrollTrigger);
+const DIVGAZE_INFO = "Divgaze is a creative tech studio pushing ideas beyond boundaries. We blend design, technology, and AI to craft future-ready digital experiences, from websites and apps to content and intelligent solutions. Based in Sri Lanka with a global vision, we don't just build products. We shape what's next.";
 
-export const AboutSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+export const AboutSection: React.FC = () => {
+  const expertiseItems = [
+    { id: '01', title: 'Creative Design' },
+    { id: '02', title: 'AI Engineering' },
+    { id: '03', title: 'Bespoke Dev' },
+    { id: '04', title: 'Content Strategy' },
+  ];
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // SVG Stroke animation (white)
-      if (pathRef.current) {
-        const length = pathRef.current.getTotalLength();
-        gsap.set(pathRef.current, { 
-          strokeDasharray: length, 
-          strokeDashoffset: length 
-        });
-        
-        gsap.to(pathRef.current, {
-          strokeDashoffset: 0,
-          duration: 3,
-          ease: "power2.inOut",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 60%",
-          }
-        });
-
-        // Parallax drift for the stroke
-        gsap.to(pathRef.current, {
-          x: -50,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          }
-        });
-      }
-
-      // Title line animation
-      if (titleRef.current) {
-        const lines = titleRef.current.querySelectorAll('.line');
-        gsap.from(lines, {
-          y: 60,
-          opacity: 0,
-          duration: 1,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 80%",
-          }
-        });
-      }
-    });
-
-    return () => ctx.revert();
-  }, []);
+  const handleButtonClick = () => {
+    console.log("Our team button clicked");
+  };
 
   return (
-    <section id="about" ref={sectionRef} className="relative py-24 lg:py-40 bg-black text-white font-inter">
-      {/* Background SVG Stroke (White) */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30">
-        <svg viewBox="0 0 1000 600" fill="none" className="w-full h-full">
-          <path 
-            ref={pathRef}
-            d="M-50,450 C150,350 400,550 600,350 S850,50 1050,150" 
-            stroke="#FFFFFF" 
-            strokeWidth="4"
-            strokeLinecap="round"
-            className="md:stroke-[6px] lg:stroke-[8px]"
-          />
-        </svg>
+    <section 
+      id="about"
+      className="min-h-screen w-full flex items-center justify-center bg-black overflow-hidden relative font-inter"
+    >
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
+        <div className="absolute top-[10%] left-[5%] w-64 h-64 bg-white/5 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[10%] right-[5%] w-96 h-96 bg-white/10 rounded-full blur-[120px]" />
       </div>
 
-      <div className="container-premium">
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-start">
-          {/* Left: Heading */}
-          <div className="space-y-12">
-            <span className="text-sm font-medium text-white/60 tracking-widest uppercase mb-4 block">
-              About Us
-            </span>
-            <h2 ref={titleRef} className="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[1.05]">
-              <span className="block line">Built for the</span>
-              <span className="block line opacity-60">future.</span>
-            </h2>
+      <div className="container mx-auto px-6 md:px-12 flex flex-col items-center justify-center text-center relative z-10">
+        
+        {/* Main Content Area */}
+        <div className="flex flex-col items-center justify-center w-full">
+          <div className="mb-6 md:mb-10">
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold leading-tight tracking-tighter text-white uppercase">
+              ABOUT US
+            </h1>
           </div>
 
-          {/* Right: Paragraphs */}
-          <div className="space-y-8 pt-4 lg:pt-24 max-w-lg">
-            <p className="text-lg md:text-xl text-white/80 leading-[1.7]">
-              We're Divgaze - a passionate, creative tech startup based in Sri Lanka, 
-              with deep roots extending to Melbourne, Australia.
+          <div className="max-w-2xl space-y-6">
+            <p className="text-xl md:text-3xl font-light text-white/90 leading-relaxed">
+              Divgaze is a <span className="font-bold border-b border-white/30">creative tech studio</span> pushing ideas beyond boundaries.
             </p>
-            <p className="text-lg md:text-xl text-white/80 leading-[1.7]">
-              At our core, we're a team of curious builders and bold thinkers who believe 
-              in creating digital experiences that truly make a difference. We're not just 
-              here to deliver services, we're here to partner with you, challenge ideas, 
-              and bring visions to life.
+            
+            <p className="text-sm md:text-lg text-zinc-400 leading-loose font-light max-w-xl mx-auto">
+              We blend design, technology, and AI to craft future-ready digital experiences, 
+              from websites and apps to content and intelligent solutions. 
+              Based in <span className="text-white font-medium">Sri Lanka</span> with a global vision, we don't just build products. 
+              We <span className="text-white font-medium italic">shape what's next</span>.
             </p>
-            <p className="text-lg md:text-xl text-white/80 leading-[1.7]">
-              What sets us apart? We put our clients first — always. We dive deep into 
-              every project, explore every angle, and give our absolute best to craft 
-              solutions that are smart, scalable, and meaningful.
-            </p>
-            <p className="text-lg md:text-xl text-white/80 leading-[1.7]">
-              We embrace experimentation. We welcome risk. Because we know real innovation 
-              happens outside the comfort zone.
-            </p>
+
+            {/* Button */}
+            <div className="pt-4">
+              <button
+                onClick={handleButtonClick}
+                className="group relative px-8 py-4 bg-primary text-primary-foreground rounded-full overflow-hidden font-medium border-0 transition-all duration-300 hover:scale-105"
+              >
+                <span className="relative z-10">Our team</span>
+                <div className="absolute inset-0 bg-gray-400 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              </button>
+            </div>
+          </div>
+          
+          {/* Expertise Section */}
+          <div className="mt-16 w-full max-w-4xl">
+            <h2 className="text-[10px] md:text-xs uppercase tracking-[0.4em] font-bold text-zinc-500 mb-10">Expertise</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 text-center">
+              {expertiseItems.map((item) => (
+                <div key={item.id} className="group cursor-default flex flex-col items-center">
+                  <span className="block text-[10px] font-mono text-zinc-600 mb-3 group-hover:text-white transition-colors duration-500">
+                    // {item.id}
+                  </span>
+                  <h3 className="text-xs md:text-sm font-medium text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-500 uppercase tracking-widest whitespace-nowrap">
+                    {item.title}
+                  </h3>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Persistent Footer Line */}
+      <div className="absolute bottom-0 left-0 w-full p-6 border-t border-white/5 flex justify-end items-center bg-black/50 backdrop-blur-sm">
+        <div className="flex space-x-8 text-[10px] md:text-xs uppercase tracking-widest font-bold">
+          <a href="#" className="hover:text-zinc-400 transition-colors">Inquiry</a>
+          <a href="#" className="hover:text-zinc-400 transition-colors">Network</a>
+        </div>
+      </div>
+
+      {/* Hide cursor in this section */}
+      <style>{`
+        #about,
+        #about * {
+          cursor: none !important;
+        }
+      `}</style>
     </section>
   );
 };
