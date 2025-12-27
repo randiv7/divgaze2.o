@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
-import { Layout } from '@/components/layout/Layout';
+import { Navbar } from '@/components/layout/Navbar';
 import Hero from '@/components/creative-lab/Hero';
 import ServicesHorizontal from '@/components/creative-lab/ServicesHorizontal';
 import About from '@/components/creative-lab/About';
@@ -53,6 +53,7 @@ const CreativeLab: React.FC = () => {
 
   return (
     <main className="bg-[#FFF4E4] text-[#2B1A12] font-sans selection:bg-[#2B1A12] selection:text-[#FFF4E4]">
+      <Navbar />
       <AnimatePresence mode="wait">
         {isLoading ? (
           <motion.div
