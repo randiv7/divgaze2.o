@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, useMotionValue } from 'framer-motion';
 
 const services = [
   {
@@ -30,25 +30,40 @@ const services = [
 
 const ServicesHorizontal: React.FC = () => {
   const targetRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  
   const { scrollYProgress } = useScroll({
     target: targetRef,
   });
 
-  const x = useTransform(scrollYProgress, 
-    [0, 0.15, 0.4, 0.65, 0.9, 1], 
-    ["0%", "-2%", "-27%", "-52%", "-80%", "-85%"]
+  // Detect screen size on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Responsive scroll distance - more on mobile, less on desktop
+  const x = useTransform(
+    scrollYProgress, 
+    [0, 1], 
+    isMobile ? ["0%", "-240%"] : ["0%", "-75%"]
   );
 
   return (
-    <section ref={targetRef} className="relative h-[400vh] bg-[#FFF4E4]">
-      <div className="sticky top-0 flex flex-col justify-end h-screen pb-16 md:pb-20 overflow-hidden">
+    <section ref={targetRef} className="relative h-[500vh] md:h-[400vh] bg-[#FFF4E4]">
+      <div className="sticky top-0 flex flex-col justify-end h-screen pb-12 md:pb-20 overflow-hidden">
         
         {/* Capabilities heading positioned above cards */}
-        <div className="px-6 md:px-12 mb-8 md:mb-12">
+        <div className="px-6 md:px-12 mb-6 md:mb-12">
           <h3 className="text-sm md:text-base lg:text-lg uppercase tracking-[0.3em] md:tracking-[0.4em] font-medium text-[#2B1A12]/40">Capabilities</h3>
         </div>
         
-        <motion.div style={{ x }} className="flex gap-4 md:gap-6 lg:gap-8 px-6 md:px-12">
+        <motion.div style={{ x }} className="flex gap-5 md:gap-6 lg:gap-8 px-6 md:px-12">
           {services.map((service, index) => (
             <div key={service.id} className="flex-shrink-0">
               <motion.div
@@ -62,8 +77,8 @@ const ServicesHorizontal: React.FC = () => {
                 }}
                 className="group cursor-pointer"
               >
-                {/* Card Container - Reduced heights for better fit */}
-                <div className="relative w-[70vw] h-[70vw] sm:w-[60vw] sm:h-[60vw] md:w-[42vw] md:h-[42vw] lg:w-[38vw] lg:h-[38vw] overflow-hidden bg-[#F5EAD7] border border-[#2B1A12]/5 mb-4 md:mb-6 transition-all duration-700 ease-out group-hover:-translate-y-3 group-hover:shadow-[0_32px_64px_-16px_rgba(43,26,18,0.12)]">
+                {/* Card Container */}
+                <div className="relative w-[76vw] h-[76vw] sm:w-[66vw] sm:h-[66vw] md:w-[42vw] md:h-[42vw] lg:w-[38vw] lg:h-[38vw] overflow-hidden bg-[#F5EAD7] border border-[#2B1A12]/5 mb-4 md:mb-6 transition-all duration-700 ease-out group-hover:-translate-y-3 group-hover:shadow-[0_32px_64px_-16px_rgba(43,26,18,0.12)]">
                   {/* Image with opacity change on hover */}
                   <img 
                     src={service.image} 
@@ -121,7 +136,7 @@ const ServicesHorizontal: React.FC = () => {
             </div>
           ))}
           
-          <div className="w-[35vw] sm:w-[30vw] md:w-[20vw] lg:w-[15vw] flex-shrink-0 h-[70vh]"></div>
+          <div className="w-[25vw] sm:w-[20vw] md:w-[15vw] flex-shrink-0 h-[70vh]"></div>
         </motion.div>
       </div>
     </section>
