@@ -5,7 +5,6 @@ import { Navbar } from '@/components/layout/Navbar';
 import Hero from '@/components/creative-lab/Hero';
 import ServicesHorizontal from '@/components/creative-lab/ServicesHorizontal';
 import About from '@/components/creative-lab/About';
-import SelectedWork from '@/components/creative-lab/SelectedWork';
 import Footer from '@/components/creative-lab/Footer';
 import Starburst from '@/components/creative-lab/Starburst';
 
@@ -92,7 +91,6 @@ const CreativeLab: React.FC = () => {
             <Hero />
             <About />
             <ServicesHorizontal />
-            <SelectedWork />
             <Footer />
           </motion.div>
         )}

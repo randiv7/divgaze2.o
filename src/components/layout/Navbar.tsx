@@ -16,6 +16,7 @@ export const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
+  const isCreativeLabPage = location.pathname === '/creative-lab';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,10 +63,10 @@ export const Navbar = () => {
     }`}>
       <nav className="container-premium">
         <div className="flex items-center justify-between h-24 px-4 md:px-8">
-          {/* Logo Image */}
+          {/* Logo Image - Conditional based on page */}
           <Link to="/" className="transition-opacity hover:opacity-80 py-4">
             <img 
-              src="/logo.png" 
+              src={isCreativeLabPage ? "/blogo.png" : "/logo.png"} 
               alt="Divgaze Logo" 
               className={`h-12 md:h-14 w-auto transition-all duration-300 ${
                 !isScrolled && isHomePage ? 'brightness-0 invert' : ''
@@ -110,45 +111,35 @@ export const Navbar = () => {
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
-      </nav>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="md:hidden bg-white/90 backdrop-blur-xl border-b border-black/5">
-            <div className="container-premium py-8 flex flex-col gap-6">
-              <a href="#home" onClick={(e) => handleNavClick(e, 'home')} className="text-lg font-medium">
-                Home
-              </a>
-
-              <div>
-                <button onClick={() => setIsServicesOpen(!isServicesOpen)} className="flex items-center gap-2 text-lg font-medium mb-4">
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="md:hidden overflow-hidden bg-white/95 backdrop-blur-xl border-t border-black/5">
+              <div className="px-4 py-6 space-y-4">
+                <a href="#home" onClick={(e) => handleNavClick(e, 'home')} className="block text-sm font-medium hover:opacity-60 transition-opacity">
+                  Home
+                </a>
+                <button onClick={handleServicesClick} className="block w-full text-left text-sm font-medium hover:opacity-60 transition-opacity">
                   Services
-                  <ChevronDown className={`w-5 h-5 transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
                 </button>
-                <AnimatePresence>
-                  {isServicesOpen && (
-                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="pl-4 flex flex-col gap-4">
-                      {services.map((service) => (
-                        <Link key={service.name} to={service.href} onClick={() => setIsOpen(false)} className="text-base text-muted-foreground">
-                          {service.name}
-                        </Link>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div className="pl-4 space-y-2">
+                  {services.map((service) => (
+                    <Link key={service.name} to={service.href} onClick={() => setIsOpen(false)} className="block text-sm hover:opacity-60 transition-opacity">
+                      {service.name}
+                    </Link>
+                  ))}
+                </div>
+                <a href="#about" onClick={(e) => handleNavClick(e, 'about')} className="block text-sm font-medium hover:opacity-60 transition-opacity">
+                  About
+                </a>
+                <a href="#contact" onClick={(e) => handleNavClick(e, 'contact')} className="block text-sm font-medium hover:opacity-60 transition-opacity">
+                  Contact
+                </a>
               </div>
-
-              <a href="#about" onClick={(e) => handleNavClick(e, 'about')} className="text-lg font-medium">
-                About
-              </a>
-
-              <a href="#contact" onClick={(e) => handleNavClick(e, 'contact')} className="text-lg font-medium">
-                Contact
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
     </header>
   );
 };
