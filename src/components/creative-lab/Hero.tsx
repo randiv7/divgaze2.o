@@ -33,18 +33,31 @@ const Hero: React.FC = () => {
   return (
     <section className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden px-6 md:px-12">
       
-      {/* BACKGROUND IMAGE - ABSOLUTE POSITIONED AT Z-0 */}
+      {/* MOBILE & DESKTOP RESPONSIVE BACKGROUND IMAGE */}
       <div className="absolute inset-0 w-full h-full z-0">
+        {/* Desktop/Tablet Background */}
         <div 
-          className="w-full h-full bg-cover bg-center bg-no-repeat"
+          className="hidden sm:block w-full h-full bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: 'url(/back.jpg)' }}
         >
-          {/* Light overlay for text contrast - adjust opacity as needed */}
-          <div className="absolute inset-0 bg-[#FFF4E4]/20"></div>
+          {/* Light overlay for text contrast */}
+          <div className="absolute inset-0 bg-[#FFF4E4]/15"></div>
+        </div>
+        
+        {/* Mobile Background - Better positioning for small screens */}
+        <div 
+          className="block sm:hidden w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: 'url(/back.jpg)',
+            backgroundPosition: 'center center'
+          }}
+        >
+          {/* Slightly darker overlay on mobile for better text readability */}
+          <div className="absolute inset-0 bg-[#FFF4E4]/25"></div>
         </div>
       </div>
 
-      {/* CONTENT LAYER - RELATIVE POSITIONED AT Z-10 */}
+      {/* CONTENT LAYER - ABOVE BACKGROUND */}
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start space-y-[-3vw] md:space-y-[-4vw]">
         
         {/* Creative Text with Character Stagger */}
@@ -86,7 +99,7 @@ const Hero: React.FC = () => {
             </div>
           </motion.div>
           
-          {/* Lab Text with Character Stagger */}
+          {/* Lab Text with Character Stagger - NOW SAME FONT AS CREATIVE */}
           <motion.div 
             className="flex overflow-visible"
             variants={{
@@ -107,7 +120,7 @@ const Hero: React.FC = () => {
               <motion.span
                 key={index}
                 variants={letterVariants}
-                className="text-[20vw] md:text-[14vw] font-serif font-medium tracking-tighter text-[#2B1A12] leading-none inline-block origin-bottom"
+                className="text-[20vw] md:text-[14vw] font-serif italic font-light tracking-tighter text-[#2B1A12]/90 leading-none inline-block origin-bottom"
               >
                 {char}
               </motion.span>
