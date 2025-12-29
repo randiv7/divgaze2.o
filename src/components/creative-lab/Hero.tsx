@@ -37,7 +37,7 @@ const Hero: React.FC = () => {
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start space-y-[-3vw] md:space-y-[-4vw]">
         {/* Creative Text with Character Stagger */}
         <motion.div 
-          className="flex overflow-hidden ml-[-1vw] md:ml-[-2vw]"
+          className="flex overflow-visible ml-[-1vw] md:ml-[-2vw]"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -73,7 +73,7 @@ const Hero: React.FC = () => {
           
           {/* Lab Text with Character Stagger */}
           <motion.div 
-            className="flex overflow-hidden"
+            className="flex overflow-visible"
             variants={{
               ...containerVariants,
               visible: {

@@ -34,16 +34,19 @@ const ServicesHorizontal: React.FC = () => {
     target: targetRef,
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
+  const x = useTransform(scrollYProgress, 
+    [0, 0.15, 0.4, 0.65, 0.9, 1], 
+    ["0%", "-2%", "-27%", "-52%", "-75%", "-75%"]
+  );
 
   return (
     <section ref={targetRef} className="relative h-[400vh] bg-[#FFF4E4]">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <div className="absolute top-12 left-12 z-20">
-          <h3 className="text-[10px] uppercase tracking-[0.4em] font-medium text-[#2B1A12]/40">Capabilities</h3>
+        <div className="absolute top-8 md:top-12 left-6 md:left-12 z-20">
+          <h3 className="text-sm md:text-base lg:text-lg uppercase tracking-[0.3em] md:tracking-[0.4em] font-medium text-[#2B1A12]/40">Capabilities</h3>
         </div>
         
-        <motion.div style={{ x }} className="flex gap-4 px-12">
+        <motion.div style={{ x }} className="flex gap-4 md:gap-6 px-6 md:px-12">
           {services.map((service, index) => (
             <motion.div
               key={service.id}
@@ -57,11 +60,6 @@ const ServicesHorizontal: React.FC = () => {
               }}
               className="group relative h-[70vh] w-[80vw] md:w-[45vw] flex-shrink-0 overflow-hidden bg-[#F5EAD7] flex flex-col justify-end p-8 md:p-12 border border-[#2B1A12]/5"
             >
-              {/* IMAGE REMOVED - Structure kept for future */}
-              {/* <div 
-                className="absolute inset-0 bg-cover bg-center grayscale opacity-10 transition-all duration-1000 group-hover:opacity-30 group-hover:scale-105"
-                style={{ backgroundImage: `url(${service.image})` }}
-              /> */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#FFF4E4] via-[#FFF4E4]/40 to-transparent"></div>
               
               <div className="relative z-10 space-y-6">
@@ -83,7 +81,6 @@ const ServicesHorizontal: React.FC = () => {
             </motion.div>
           ))}
           
-          {/* End cap to give visual space */}
           <div className="w-[15vw] flex-shrink-0 h-[70vh]"></div>
         </motion.div>
       </div>
