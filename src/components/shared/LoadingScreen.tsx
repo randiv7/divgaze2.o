@@ -45,7 +45,7 @@ export const LoadingScreen = ({
       {/* Center Progress Bar */}
       <div className="w-64 h-8 bg-gray-800/50 overflow-hidden">
         <div 
-          className="h-full bg-white transition-all ease-linear duration-75"
+          className="h-full bg-white"
           style={{ width: `${progress}%` }}
         />
       </div>
