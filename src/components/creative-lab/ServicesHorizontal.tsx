@@ -41,8 +41,10 @@ const ServicesHorizontal: React.FC = () => {
 
   return (
     <section ref={targetRef} className="relative h-[400vh] bg-[#FFF4E4]">
-      <div className="sticky top-0 flex h-screen items-end pb-16 md:pb-20 overflow-hidden">
-        <div className="absolute top-8 md:top-12 left-6 md:left-12 z-20">
+      <div className="sticky top-0 flex flex-col justify-end h-screen pb-16 md:pb-20 overflow-hidden">
+        
+        {/* Capabilities heading positioned above cards */}
+        <div className="px-6 md:px-12 mb-8 md:mb-12">
           <h3 className="text-sm md:text-base lg:text-lg uppercase tracking-[0.3em] md:tracking-[0.4em] font-medium text-[#2B1A12]/40">Capabilities</h3>
         </div>
         
