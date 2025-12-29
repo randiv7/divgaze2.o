@@ -36,7 +36,7 @@ const ServicesHorizontal: React.FC = () => {
 
   const x = useTransform(scrollYProgress, 
     [0, 0.15, 0.4, 0.65, 0.9, 1], 
-    ["0%", "-2%", "-27%", "-52%", "-75%", "-75%"]
+    ["0%", "-2%", "-27%", "-52%", "-80%", "-85%"]
   );
 
   return (
@@ -121,7 +121,7 @@ const ServicesHorizontal: React.FC = () => {
             </div>
           ))}
           
-          <div className="w-[15vw] flex-shrink-0 h-[70vh]"></div>
+          <div className="w-[35vw] sm:w-[30vw] md:w-[20vw] lg:w-[15vw] flex-shrink-0 h-[70vh]"></div>
         </motion.div>
       </div>
     </section>
