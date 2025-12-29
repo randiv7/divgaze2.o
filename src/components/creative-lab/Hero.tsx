@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import Starburst from './Starburst';
 
 const Hero: React.FC = () => {
@@ -32,9 +31,22 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-[#FFF4E4] px-6 md:px-12">
+    <section className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden px-6 md:px-12">
+      
+      {/* BACKGROUND IMAGE - ABSOLUTE POSITIONED AT Z-0 */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <div 
+          className="w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/back.jpg)' }}
+        >
+          {/* Light overlay for text contrast - adjust opacity as needed */}
+          <div className="absolute inset-0 bg-[#FFF4E4]/20"></div>
+        </div>
+      </div>
 
+      {/* CONTENT LAYER - RELATIVE POSITIONED AT Z-10 */}
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start space-y-[-3vw] md:space-y-[-4vw]">
+        
         {/* Creative Text with Character Stagger */}
         <motion.div 
           className="flex overflow-visible ml-[-1vw] md:ml-[-2vw]"
@@ -53,7 +65,10 @@ const Hero: React.FC = () => {
           ))}
         </motion.div>
         
+        {/* Starburst and Lab Text Container */}
         <div className="flex w-full justify-end items-center mt-[-3vw] md:mt-[-4vw]">
+          
+          {/* Starburst Icon */}
           <motion.div
             initial={{ scale: 0, opacity: 0, rotate: -45 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
