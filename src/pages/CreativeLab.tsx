@@ -52,7 +52,7 @@ const CreativeLab: React.FC = () => {
   }, [isLoading]);
 
   return (
-    <main className="bg-[#FFF4E4] text-[#2B1A12] font-sans selection:bg-[#2B1A12] selection:text-[#FFF4E4]">
+    <main className="bg-[#FFF4E4] text-[#2B1A12] font-sans selection:bg-[#2B1A12] selection:text-[#FFF4E4] min-h-screen">
       <Navbar />
       <AnimatePresence mode="wait">
         {isLoading ? (
@@ -61,7 +61,7 @@ const CreativeLab: React.FC = () => {
             initial={{ opacity: 1 }}
             exit={{ 
               opacity: 0,
-              transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as any }
+              transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as any }
             }}
             className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FFF4E4]"
           >
@@ -85,9 +85,9 @@ const CreativeLab: React.FC = () => {
         ) : (
           <motion.div
             key="content"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as any }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as any }}
           >
             <Hero />
             <About />
