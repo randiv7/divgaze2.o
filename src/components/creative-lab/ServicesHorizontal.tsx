@@ -30,6 +30,7 @@ const services = [
 
 const ServicesHorizontal: React.FC = () => {
   const targetRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   
   const { scrollYProgress } = useScroll({
@@ -56,6 +57,11 @@ const ServicesHorizontal: React.FC = () => {
 
   return (
     <section ref={targetRef} className="relative h-[500vh] md:h-[400vh] bg-[#FFF4E4]">
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
       <div className="sticky top-0 flex flex-col justify-end h-screen pb-12 md:pb-20 overflow-hidden">
         
         {/* Capabilities heading positioned above cards */}
@@ -63,7 +69,93 @@ const ServicesHorizontal: React.FC = () => {
           <h3 className="text-sm md:text-base lg:text-lg uppercase tracking-[0.3em] md:tracking-[0.4em] font-medium text-[#2B1A12]/40">Capabilities</h3>
         </div>
         
-        <motion.div style={{ x }} className="flex gap-5 md:gap-6 lg:gap-8 px-6 md:px-12">
+        {/* Mobile: Horizontal scroll container, Desktop: Motion div */}
+        {isMobile ? (
+          <div 
+            ref={scrollContainerRef}
+            className="flex gap-5 px-6 overflow-x-auto overflow-y-hidden snap-x snap-mandatory hide-scrollbar"
+            style={{ 
+              WebkitOverflowScrolling: 'touch',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+          >
+            {services.map((service, index) => (
+              <div key={service.id} className="flex-shrink-0 snap-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ 
+                    duration: 1.2, 
+                    delay: index * 0.05,
+                    ease: [0.16, 1, 0.3, 1] as any
+                  }}
+                  className="group cursor-pointer"
+                >
+                  {/* Card Container */}
+                  <div className="relative w-[76vw] h-[76vw] overflow-hidden bg-[#F5EAD7] border border-[#2B1A12]/5 mb-4 transition-all duration-700 ease-out group-hover:-translate-y-3 group-hover:shadow-[0_32px_64px_-16px_rgba(43,26,18,0.12)]">
+                    {/* Image with opacity change on hover */}
+                    <img 
+                      src={service.image} 
+                      alt={service.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 group-hover:opacity-30"
+                    />
+                    
+                    {/* Background overlay that becomes more visible on hover */}
+                    <div className="absolute inset-0 bg-[#FFF4E4] opacity-0 group-hover:opacity-90 transition-opacity duration-700"></div>
+                    
+                    {/* ID Number - visible always */}
+                    <div className="absolute top-6 left-6 z-10">
+                      <span className="font-serif italic text-3xl opacity-20 block text-[#2B1A12] transition-opacity duration-500 group-hover:opacity-60">{service.id}</span>
+                    </div>
+                    
+                    {/* Description - only visible on hover */}
+                    <div className="absolute inset-0 flex items-center justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10">
+                      <p className="max-w-md text-sm text-[#2B1A12]/90 font-light leading-[1.7] tracking-normal text-center">
+                        {service.description}
+                      </p>
+                    </div>
+                    
+                    {/* Decorative line */}
+                    <div className="absolute top-6 right-6 overflow-hidden">
+                      <motion.div 
+                        initial={{ x: "100%" }}
+                        whileInView={{ x: 0 }}
+                        transition={{ delay: 0.5, duration: 1 }}
+                        className="w-6 h-[1px] bg-[#2B1A12]/20"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Title Below Card */}
+                  <div className="space-y-1 px-2">
+                    <h4 className="relative text-2xl font-serif font-light text-[#2B1A12] tracking-[-0.02em] group-hover:translate-x-2 transition-transform duration-500 flex items-center gap-2">
+                      <span className="relative">
+                        {service.title}
+                        {/* Underline Expand Animation */}
+                        <span className="absolute left-0 bottom-0 w-0 h-px bg-[#2B1A12] transition-all duration-500 group-hover:w-full" />
+                      </span>
+                      {/* Arrow Icon Entrance */}
+                      <svg 
+                        className="w-5 h-5 opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 text-[#2B1A12]/40 flex-shrink-0" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7V17" />
+                      </svg>
+                    </h4>
+                  </div>
+                </motion.div>
+              </div>
+            ))}
+            
+            <div className="w-[25vw] flex-shrink-0 h-[70vh]"></div>
+          </div>
+        ) : (
+          <motion.div style={{ x }} className="flex gap-5 md:gap-6 lg:gap-8 px-6 md:px-12">
           {services.map((service, index) => (
             <div key={service.id} className="flex-shrink-0">
               <motion.div
@@ -138,6 +230,7 @@ const ServicesHorizontal: React.FC = () => {
           
           <div className="w-[25vw] sm:w-[20vw] md:w-[15vw] flex-shrink-0 h-[70vh]"></div>
         </motion.div>
+        )}
       </div>
     </section>
   );
