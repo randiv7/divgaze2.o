@@ -6,25 +6,25 @@ const services = [
     id: "01",
     title: "Campaign Strategy",
     description: "Data-driven campaigns that resonate with your target audience, built for longevity and impact. We analyze market movements to define a unique voice for your brand.",
-    image: "https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=800&auto=format&fit=crop"
+    image: "/cs.png"
   },
   {
     id: "02",
     title: "Video Production",
     description: "Professional editing, motion graphics, and visual storytelling that captures the essence of your brand. Our lens focuses on the intersection of cinema and digital commerce.",
-    image: "https://images.unsplash.com/photo-1492691523567-6170f0295dbd?q=80&w=800&auto=format&fit=crop"
+    image: "/vp.png"
   },
   {
     id: "03",
     title: "AI-Powered Content",
     description: "Leverage generative AI to create unique, engaging content at scale while maintaining human-centric artistry. We blend algorithmic precision with human intuition.",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop"
+    image: "/ai.png"
   },
   {
     id: "04",
     title: "Social Media",
     description: "Complete social presence management across all platforms, from community building to aesthetic curation. We design ecosystems that foster genuine connection.",
-    image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop"
+    image: "/sm.png"
   }
 ];
 
@@ -60,6 +60,12 @@ const ServicesHorizontal: React.FC = () => {
               }}
               className="group relative w-[80vw] h-[80vw] md:w-[45vw] md:h-[45vw] flex-shrink-0 overflow-hidden bg-[#F5EAD7] flex flex-col justify-end p-8 md:p-12 border border-[#2B1A12]/5"
             >
+              <img 
+                src={service.image} 
+                alt={service.title}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              
               <div className="absolute inset-0 bg-gradient-to-t from-[#FFF4E4] via-[#FFF4E4]/40 to-transparent"></div>
               
               <div className="relative z-10 space-y-6">
