@@ -58,7 +58,7 @@ const ServicesHorizontal: React.FC = () => {
                 delay: index * 0.05,
                 ease: [0.16, 1, 0.3, 1] as any
               }}
-              className="group relative h-[70vh] w-[80vw] md:w-[45vw] flex-shrink-0 overflow-hidden bg-[#F5EAD7] flex flex-col justify-end p-8 md:p-12 border border-[#2B1A12]/5"
+              className="group relative w-[80vw] h-[80vw] md:w-[45vw] md:h-[45vw] flex-shrink-0 overflow-hidden bg-[#F5EAD7] flex flex-col justify-end p-8 md:p-12 border border-[#2B1A12]/5"
             >
               <div className="absolute inset-0 bg-gradient-to-t from-[#FFF4E4] via-[#FFF4E4]/40 to-transparent"></div>
               
