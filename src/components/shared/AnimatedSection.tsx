@@ -1,48 +1,60 @@
-import { ReactNode, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useEffect, useRef, useState, ReactNode } from 'react';
 
 interface AnimatedSectionProps {
   children: ReactNode;
   className?: string;
   delay?: number;
-  direction?: 'up' | 'left' | 'right' | 'none';
+  direction?: 'up' | 'left' | 'right' | 'none' | 'zoom';
 }
 
-export const AnimatedSection = ({
-  children,
-  className = '',
+export const AnimatedSection = ({ 
+  children, 
+  className = '', 
   delay = 0,
-  direction = 'up',
+  direction = 'up'
 }: AnimatedSectionProps) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const [isVisible, setIsVisible] = useState(false);
+  const domRef = useRef<HTMLDivElement>(null);
 
-  const getInitialPosition = () => {
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      });
+    }, { 
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    const { current } = domRef;
+    if (current) {
+      observer.observe(current);
+    }
+
+    return () => {
+      if (current) observer.unobserve(current);
+    };
+  }, []);
+
+  const getDirectionClass = () => {
     switch (direction) {
-      case 'up':
-        return { y: 40, x: 0 };
-      case 'left':
-        return { x: -40, y: 0 };
-      case 'right':
-        return { x: 40, y: 0 };
-      case 'none':
-        return { x: 0, y: 0 };
+      case 'up': return 'fade-up';
+      case 'left': return 'fade-left';
+      case 'right': return 'fade-right';
+      case 'zoom': return 'zoom-in';
+      default: return '';
     }
   };
 
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, ...getInitialPosition() }}
-      animate={isInView ? { opacity: 1, x: 0, y: 0 } : {}}
-      transition={{
-        duration: 0.8,
-        delay,
-        ease: [0.21, 0.47, 0.32, 0.98],
-      }}
-      className={className}
+    <div
+      ref={domRef}
+      className={`fade-in-section ${getDirectionClass()} ${isVisible ? 'is-visible' : ''} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };

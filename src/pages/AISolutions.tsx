@@ -1,246 +1,258 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight, Bot, Brain, Cpu, Workflow, Zap, Database } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
+import ParticleBackground from '@/components/shared/ParticleBackground';
 
 const services = [
   {
-    icon: Bot,
-    title: 'Agentic AI Workflows',
-    description: 'Autonomous agents that handle complex tasks, make decisions, and execute multi-step processes.',
+    title: "Agentic AI Workflows",
+    description: "Autonomous agents that handle complex tasks, make decisions, and execute multi-step processes with human-like reasoning."
   },
   {
-    icon: Brain,
-    title: 'Generative AI Tools',
-    description: 'Custom AI solutions for content generation, image synthesis, and creative automation.',
+    title: "Generative AI Tools",
+    description: "Custom AI solutions for high-fidelity content generation, image synthesis, and sophisticated creative automation."
   },
   {
-    icon: Cpu,
-    title: 'Machine Learning Systems',
-    description: 'Production-ready ML pipelines for prediction, classification, and optimization.',
-  },
+    title: "Machine Learning Systems",
+    description: "Production-ready ML pipelines designed for enterprise prediction, classification, and continuous optimization."
+  }
 ];
 
 const useCases = [
-  'Customer Service Automation',
-  'Document Processing & Analysis',
-  'Predictive Analytics',
-  'Content Generation at Scale',
-  'Process Optimization',
-  'Intelligent Search & Discovery',
+  "Customer Service Automation",
+  "Document Processing & Analysis",
+  "Predictive Analytics",
+  "Content Generation at Scale",
+  "Process Optimization",
+  "Intelligent Search & Discovery"
 ];
 
 const portfolio = [
   {
-    title: 'AI Customer Agent',
-    outcome: 'Reduced response time by 85%',
-    description: 'Autonomous support agent handling 10,000+ queries daily.',
+    metric: "85%",
+    context: "Reduction in response time",
+    title: "AI Customer Agent",
+    description: "Autonomous support agent handling 10,000+ queries daily with high sentiment accuracy and zero-latency resolution."
   },
   {
-    title: 'Document Intelligence',
-    outcome: 'Processing 50,000 docs/month',
-    description: 'Automated extraction and classification system.',
+    metric: "50k",
+    context: "Documents processed / month",
+    title: "Document Intelligence",
+    description: "Automated extraction and classification system for complex financial instruments and legal frameworks."
   },
   {
-    title: 'Predictive Maintenance',
-    outcome: 'Prevented $2M in downtime',
-    description: 'ML model for equipment failure prediction.',
-  },
+    metric: "$2M",
+    context: "Prevented annual downtime",
+    title: "Predictive Maintenance",
+    description: "Advanced ML model for mission-critical industrial equipment, identifying failures before they manifest."
+  }
 ];
 
 const techStack = [
-  'OpenAI', 'LangChain', 'PyTorch', 'TensorFlow', 'Hugging Face', 'Vector DBs'
+  "OpenAI", "LangChain", "LlamaIndex", "Pinecone", "Hugging Face", "Google DeepMind", "FastAPI"
 ];
 
 const AISolutions = () => {
+  const navigate = useNavigate();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    navigate('/', { state: { scrollTo: 'contact' } });
+  };
+
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="section-full relative overflow-hidden font-space-grotesk pt-20 bg-primary text-primary-foreground">
-        <div className="noise-overlay opacity-[0.05]" />
-        
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div 
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `linear-gradient(hsl(var(--primary-foreground) / 0.1) 1px, transparent 1px),
-                               linear-gradient(90deg, hsl(var(--primary-foreground) / 0.1) 1px, transparent 1px)`,
-              backgroundSize: '60px 60px',
-            }}
-          />
-          {/* Floating Nodes */}
-          <motion.div
-            className="absolute top-1/4 right-1/4 w-4 h-4 rounded-full bg-primary-foreground/20"
-            animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          />
-          <motion.div
-            className="absolute top-1/2 left-1/3 w-3 h-3 rounded-full bg-primary-foreground/20"
-            animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-          />
-        </div>
+      <div className="min-h-screen bg-black text-white font-space-grotesk selection:bg-white selection:text-black">
+        {/* Hero Section */}
+        <section className="relative min-h-screen flex flex-col justify-center px-8 md:px-32 pt-32 overflow-hidden font-space-grotesk">
+          <ParticleBackground />
+          <div className="ambient-blob top-[-15%] left-[-10%]"></div>
+          <div className="ambient-blob ambient-blob-2 bottom-[5%] right-[-5%]"></div>
 
-        <div className="container-premium relative z-10">
-          <AnimatedSection>
-            <span className="text-sm font-medium text-primary-foreground/60 tracking-widest uppercase mb-4 block">
-              AI Solutions
-            </span>
-            <h1 className="heading-xl max-w-4xl">
-              Intelligence, <span className="opacity-60">engineered.</span>
-            </h1>
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.15}>
-            <p className="body-lg max-w-2xl text-primary-foreground/70 mt-8">
-              We build AI systems that think, learn, and act. From agentic workflows 
-              to production ML pipelines, we turn complex problems into elegant solutions.
-            </p>
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.3}>
-            <div className="mt-12">
-              <Link 
-                to="/contact" 
-                className="inline-flex items-center justify-center px-8 py-4 bg-primary-foreground text-primary font-medium 
-                           transition-all duration-300 hover:opacity-90 hover:scale-[1.02]"
+          <div className="relative z-10">
+            <AnimatedSection direction="up" delay={100}>
+              <span className="text-xs uppercase tracking-[0.5em] font-light mb-8 block text-white/50 font-space-grotesk">
+                Intelligence, Engineered.
+              </span>
+            </AnimatedSection>
+            
+            <AnimatedSection direction="up" delay={300}>
+              <h1 className="text-6xl md:text-[10rem] font-light leading-none tracking-tighter mb-12 font-space-grotesk">
+                AI SOLUTIONS
+              </h1>
+            </AnimatedSection>
+            
+            <AnimatedSection direction="up" delay={500} className="max-w-3xl">
+              <p className="text-xl md:text-2xl font-light leading-relaxed text-white/70 mb-16 font-space-grotesk">
+                We build AI systems that think, learn, and act. From agentic workflows to production ML pipelines, we turn complex problems into elegant solutions.
+              </p>
+              <a 
+                href="/" 
+                onClick={handleContactClick}
+                className="inline-block border border-white px-10 py-4 text-xs uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-700 font-space-grotesk"
               >
                 Discuss Your Project
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
+              </a>
+            </AnimatedSection>
+          </div>
 
-      {/* What We Solve */}
-      <section className="section-full bg-gray-900 text-primary-foreground font-space-grotesk">
-        <div className="container-premium">
-          <AnimatedSection>
-            <span className="text-sm font-medium text-gray-500 tracking-widest uppercase mb-4 block">
-              What We Solve
-            </span>
-            <h2 className="heading-lg max-w-3xl mb-16">
-              Complex problems, <span className="opacity-60">intelligent solutions.</span>
-            </h2>
+          <div className="absolute right-0 bottom-10 w-1/3 h-px bg-gradient-to-l from-white/30 to-transparent hidden md:block"></div>
+        </section>
+
+        {/* Services Section */}
+        <section className="py-40 px-8 md:px-32 bg-zinc-900/30 border-y border-white/5 font-space-grotesk">
+          <AnimatedSection className="mb-24" direction="left">
+            <h2 className="text-xs uppercase tracking-[0.4em] font-light mb-4 text-white/50 font-space-grotesk">What We Solve</h2>
+            <h3 className="text-4xl md:text-6xl font-light tracking-tight font-space-grotesk">Complex problems,<br/>intelligent solutions.</h3>
           </AnimatedSection>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <AnimatedSection key={service.title} delay={index * 0.1}>
-                <div className="p-8 border border-gray-800 hover:border-gray-600 transition-all duration-300 group">
-                  <service.icon className="w-10 h-10 mb-6 text-gray-400 group-hover:text-primary-foreground transition-colors" />
-                  <h3 className="heading-sm mb-3">{service.title}</h3>
-                  <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-24">
+            {services.map((service, idx) => (
+              <AnimatedSection key={idx} delay={idx * 200} direction="up">
+                <div className="group cursor-default">
+                  <div className="relative mb-8 h-[1px] w-full bg-white/5 overflow-hidden">
+                    <div className="absolute top-0 left-0 h-full w-6 bg-white/40 group-hover:w-full group-hover:bg-white group-hover:shadow-[0_0_15px_rgba(255,255,255,0.7)] transition-all duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)]"></div>
+                  </div>
+                  
+                  <h4 className="text-xl uppercase tracking-[0.15em] mb-6 font-medium transition-colors duration-500 group-hover:text-white text-white/80 font-space-grotesk">
+                    {service.title}
+                  </h4>
+                  <p className="text-white/40 leading-loose text-sm font-light transition-colors duration-500 group-hover:text-white/60 font-space-grotesk">
                     {service.description}
                   </p>
                 </div>
               </AnimatedSection>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Use Cases */}
-      <section className="section-full bg-primary text-primary-foreground font-space-grotesk">
-        <div className="container-premium">
-          <AnimatedSection>
-            <span className="text-sm font-medium text-primary-foreground/60 tracking-widest uppercase mb-4 block">
-              Use Cases
-            </span>
-            <h2 className="heading-lg max-w-3xl mb-16">
-              AI that drives <span className="opacity-60">real results.</span>
-            </h2>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {useCases.map((useCase, index) => (
-              <AnimatedSection key={useCase} delay={index * 0.08}>
-                <div className="flex items-center gap-4 p-6 border border-primary-foreground/20 hover:border-primary-foreground/40 transition-colors">
-                  <Zap className="w-5 h-5 text-primary-foreground/60" />
-                  <span className="font-medium">{useCase}</span>
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Portfolio */}
-      <section className="section-full bg-gray-900 text-primary-foreground font-space-grotesk">
-        <div className="container-premium">
-          <AnimatedSection>
-            <span className="text-sm font-medium text-gray-500 tracking-widest uppercase mb-4 block">
-              Portfolio
-            </span>
-            <h2 className="heading-lg max-w-3xl mb-16">
-              Measurable <span className="opacity-60">impact.</span>
-            </h2>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {portfolio.map((project, index) => (
-              <AnimatedSection key={project.title} delay={index * 0.12}>
-                <div className="p-8 bg-gray-800/50 hover:bg-gray-800 transition-all duration-300">
-                  <span className="text-sm font-mono text-gray-500">{project.outcome}</span>
-                  <h3 className="heading-sm mt-4 mb-3">{project.title}</h3>
-                  <p className="text-gray-400">{project.description}</p>
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Tech Stack */}
-      <section className="py-20 bg-primary text-primary-foreground font-space-grotesk">
-        <div className="container-premium">
-          <AnimatedSection>
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-              <div>
-                <span className="text-sm font-medium text-primary-foreground/60 tracking-widest uppercase mb-2 block">
-                  Tech Stack
-                </span>
-                <h3 className="heading-md">Built with industry-leading tools.</h3>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                {techStack.map((tech) => (
-                  <span 
-                    key={tech} 
-                    className="px-4 py-2 border border-primary-foreground/20 text-sm font-mono"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
+        {/* Use Cases Section */}
+        <section className="py-40 px-8 md:px-32 bg-black font-space-grotesk">
+          <div className="flex flex-col md:flex-row gap-20">
+            <AnimatedSection className="md:w-1/3" direction="right">
+              <h2 className="text-xs uppercase tracking-[0.4em] font-light mb-4 text-white/50 font-space-grotesk">Use Cases</h2>
+              <h3 className="text-4xl font-light tracking-tight font-space-grotesk">AI that drives real results.</h3>
+            </AnimatedSection>
+            
+            <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-y-12 gap-x-8">
+              {useCases.map((useCase, idx) => (
+                <AnimatedSection key={idx} delay={idx * 100} className="border-l border-white/10 pl-8 py-2" direction="left">
+                  <span className="text-lg font-light text-white/70 hover:text-white transition-colors cursor-default font-space-grotesk">{useCase}</span>
+                </AnimatedSection>
+              ))}
             </div>
-          </AnimatedSection>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* CTA */}
-      <section className="section-full bg-gray-900 text-primary-foreground font-space-grotesk">
-        <div className="container-premium text-center">
-          <AnimatedSection>
-            <h2 className="heading-lg mb-6">
-              Ready to build <span className="opacity-60">intelligent systems?</span>
-            </h2>
-            <p className="body-lg text-gray-400 max-w-2xl mx-auto mb-12">
-              Let's discuss how AI can transform your business operations.
-            </p>
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-8 py-4 bg-primary-foreground text-primary font-medium 
-                         transition-all duration-300 hover:opacity-90 hover:scale-[1.02]"
-            >
-              Start a Conversation
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
+        {/* Portfolio Section */}
+        <section className="py-40 px-8 md:px-32 bg-white text-black overflow-hidden font-space-grotesk">
+          <AnimatedSection className="mb-32" direction="up">
+            <h2 className="text-xs uppercase tracking-[0.4em] font-light mb-4 text-black/50 font-space-grotesk">Impact Portfolio</h2>
+            <h3 className="text-4xl md:text-6xl font-light tracking-tight font-space-grotesk">Measurable excellence.</h3>
           </AnimatedSection>
-        </div>
-      </section>
+
+          <div className="space-y-48 md:space-y-64">
+            {portfolio.map((item, idx) => (
+              <AnimatedSection 
+                key={idx} 
+                direction={idx % 2 === 0 ? 'left' : 'right'} 
+                className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center"
+              >
+                <div className={`md:col-span-6 ${idx % 2 === 0 ? 'md:order-1' : 'md:order-2 text-right md:text-left'}`}>
+                  <span className="text-8xl md:text-[14rem] font-light leading-none tracking-tighter block transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.08] hover:text-neutral-500 cursor-default text-black transform-gpu font-space-grotesk">
+                    {item.metric}
+                  </span>
+                  <div className="text-sm md:text-lg font-light text-black/40 uppercase tracking-[0.3em] mt-2 font-space-grotesk">
+                    {item.context}
+                  </div>
+                </div>
+                
+                <div className={`md:col-span-5 md:col-start-${idx % 2 === 0 ? '8' : '2'} ${idx % 2 === 0 ? 'md:order-2' : 'md:order-1'}`}>
+                  <div className="space-y-6">
+                    <h4 className="text-3xl md:text-4xl font-light tracking-wide uppercase font-space-grotesk">{item.title}</h4>
+                    <p className="text-black/60 text-lg leading-relaxed font-light font-space-grotesk">
+                      {item.description}
+                    </p>
+                    <div className="pt-4">
+                      <div className={`h-[1px] bg-black/10 w-full ${idx % 2 === 0 ? 'origin-left' : 'origin-right'} scale-x-100`}></div>
+                    </div>
+                  </div>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+        </section>
+
+        {/* Tech Stack Section */}
+        <section className="py-40 px-8 md:px-32 bg-black font-space-grotesk">
+          <AnimatedSection className="text-center mb-24" direction="up">
+            <h2 className="text-xs uppercase tracking-[0.4em] font-light text-white/50 font-space-grotesk">Engineered with Precision</h2>
+          </AnimatedSection>
+
+          <div className="flex flex-wrap justify-center gap-x-16 gap-y-16 max-w-5xl mx-auto">
+            {techStack.map((tech, idx) => (
+              <AnimatedSection key={idx} delay={idx * 100} direction="zoom">
+                <span className="text-xl md:text-3xl font-light text-white/20 hover:text-white hover:scale-110 transition-all duration-700 cursor-default uppercase tracking-[0.3em] inline-block transform-gpu font-space-grotesk">
+                  {tech}
+                </span>
+              </AnimatedSection>
+            ))}
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section className="py-40 px-8 md:px-32 bg-zinc-900/20 border-t border-white/5 font-space-grotesk">
+          <div className="flex flex-col lg:flex-row gap-24 items-start">
+            <div className="lg:w-1/2">
+              <AnimatedSection direction="up">
+                <h2 className="text-xs uppercase tracking-[0.4em] font-light mb-8 text-white/50 font-space-grotesk">Collaborate</h2>
+                <h3 className="text-4xl md:text-6xl font-light tracking-tight mb-12 font-space-grotesk">
+                  Engineer the future of your operations.
+                </h3>
+                <p className="text-white/40 mb-12 max-w-md leading-relaxed font-light font-space-grotesk">
+                  Direct engagement with our team ensures your vision is translated into production-grade intelligence.
+                </p>
+                <div className="space-y-6 pt-12 border-t border-white/10">
+                   <a 
+                     href="/" 
+                     onClick={handleContactClick}
+                     className="group block cursor-pointer"
+                   >
+                     <span className="text-[10px] text-white/30 tracking-widest block mb-2 uppercase font-space-grotesk">Get in Touch</span>
+                     <span className="text-lg tracking-widest text-white/70 group-hover:text-white transition-colors font-space-grotesk">START YOUR PROJECT</span>
+                   </a>
+                </div>
+              </AnimatedSection>
+            </div>
+            
+            <div className="lg:w-1/2 w-full">
+              <AnimatedSection delay={400} direction="zoom">
+                <div className="border border-white/10 p-10 md:p-16 bg-white/[0.02] backdrop-blur-xl">
+                  <div className="text-center space-y-8">
+                    <h4 className="text-2xl font-light tracking-wide font-space-grotesk">Ready to Build?</h4>
+                    <p className="text-white/60 font-light leading-relaxed font-space-grotesk">
+                      Let's discuss how AI can transform your business operations and drive measurable results.
+                    </p>
+                    <a 
+                      href="/" 
+                      onClick={handleContactClick}
+                      className="inline-block border border-white/30 px-12 py-6 text-[10px] uppercase tracking-[0.4em] hover:bg-white hover:text-black hover:border-white transition-all duration-700 font-space-grotesk"
+                    >
+                      Contact Us
+                    </a>
+                  </div>
+                </div>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+      </div>
     </Layout>
   );
 };

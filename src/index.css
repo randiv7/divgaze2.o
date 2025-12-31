@@ -290,3 +290,107 @@ footer * {
   opacity: 1;
   transform: scale(1);
 }
+/* Fade In Animations for AI Solutions */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(30px);
+  visibility: hidden;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.fade-up {
+  transform: translateY(60px);
+}
+
+.fade-left {
+  transform: translateX(-60px);
+}
+
+.fade-right {
+  transform: translateX(60px);
+}
+
+.zoom-in {
+  transform: scale(0.9);
+}
+
+.fade-in-section.is-visible.fade-up,
+.fade-in-section.is-visible.fade-left,
+.fade-in-section.is-visible.fade-right {
+  transform: translate(0, 0);
+}
+
+.fade-in-section.is-visible.zoom-in {
+  transform: scale(1);
+}
+
+/* Ambient Blobs */
+.ambient-blob {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ambient-blob-2 {
+  animation: float 20s ease-in-out infinite;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -30px); }
+  66% { transform: translate(-20px, 20px); }
+}
+
+/* Luxury Underline Effect */
+.luxury-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.luxury-underline::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -4px;
+  left: 0;
+  background-color: currentColor;
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.luxury-underline:hover::after {
+  width: 100%;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
