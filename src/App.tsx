@@ -24,12 +24,13 @@ const AppContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showContent, setShowContent] = useState(false);
 
-  // Check if we're on Creative Lab page
+  // Check if we're on Creative Lab or AI Solutions page
   const isCreativeLabPage = location.pathname === '/creative-lab';
+  const isAISolutionsPage = location.pathname === '/ai-solutions';
 
   useEffect(() => {
-    // Skip main loading screen for Creative Lab page
-    if (isCreativeLabPage) {
+    // Skip main loading screen for Creative Lab and AI Solutions pages
+    if (isCreativeLabPage || isAISolutionsPage) {
       setIsLoading(false);
       setShowContent(true);
       return;
@@ -41,7 +42,7 @@ const AppContent = () => {
     }, 2500);
 
     return () => clearTimeout(timer);
-  }, [isCreativeLabPage]);
+  }, [isCreativeLabPage, isAISolutionsPage]);
 
   const handleLoadingComplete = () => {
     setTimeout(() => {
@@ -50,7 +51,7 @@ const AppContent = () => {
     }, 300);
   };
 
-  if (isLoading && !isCreativeLabPage) {
+  if (isLoading && !isCreativeLabPage && !isAISolutionsPage) {
     return <LoadingScreen onComplete={handleLoadingComplete} duration={2500} />;
   }
 
