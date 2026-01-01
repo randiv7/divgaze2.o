@@ -7,6 +7,7 @@ import { KineticHero } from '@/components/shared/KineticHero';
 import { ContactSection } from '@/components/shared/ContactSection';
 import { AboutSection } from '@/components/shared/AboutSection';
 import StarField from '@/components/shared/StarField';
+import RocketLaunchSection from '@/components/rocket/RocketLaunchSection';
 
 const services = [
   {
@@ -45,20 +46,16 @@ const Index = () => {
 
   return (
     <Layout>
-      {/* Hero Section with Kinetic Particle Text */}
+      {/* Hero Section */}
       <section 
         id="home" 
-        className="relative overflow-hidden font-inter pt-20 min-h-screen flex flex-col justify-center" 
-        style={{ background: '#000000' }}
+        className="relative overflow-hidden font-inter pt-20 min-h-screen flex flex-col justify-center bg-black"
       >
-        {/* Star Field Background - z-0 */}
         <StarField />
-        
-        {/* Kinetic Text Animation - z-10 */}
         <KineticHero />
       </section>
 
-      {/* Services Section - Mobile Responsive with Better Spacing */}
+      {/* Services Section */}
       <section id="services" className="section-full bg-background font-inter">
         <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-4">
           <AnimatedSection>
@@ -78,7 +75,10 @@ const Index = () => {
         </div>
       </section>
 
-      {/* About Section with PhilosophySection Style */}
+      {/* Rocket Launch Section */}
+      <RocketLaunchSection />
+
+      {/* About Section */}
       <AboutSection />
 
       {/* Contact Section */}
