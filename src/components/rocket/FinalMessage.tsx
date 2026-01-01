@@ -64,7 +64,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
         variants={container}
         initial="hidden"
         animate="visible"
-        className="relative z-10 flex flex-wrap justify-center gap-x-6 gap-y-4 max-w-7xl text-center"
+        className="relative z-10 flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-6 gap-y-2 sm:gap-y-3 md:gap-y-4 max-w-[95vw] sm:max-w-4xl md:max-w-7xl text-center px-2 sm:px-4"
       >
         {words.map((word, wordIndex) => (
           <motion.span
@@ -76,10 +76,10 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
               <motion.span
                 key={charIndex}
                 variants={charVariants}
-                className="inline-block text-white text-4xl md:text-[8.5rem] font-black tracking-tighter uppercase leading-[0.8] select-none"
+                className="inline-block text-white text-2xl sm:text-4xl md:text-6xl lg:text-[8.5rem] font-black tracking-tight sm:tracking-tighter uppercase leading-[0.9] sm:leading-[0.85] md:leading-[0.8] select-none"
                 style={{ 
-                  textShadow: '0 0 80px rgba(255,255,255,0.2), 0 20px 50px rgba(0,0,0,0.6)',
-                  WebkitTextStroke: '1.5px rgba(255,255,255,0.1)',
+                  textShadow: '0 0 40px rgba(255,255,255,0.2), 0 10px 30px rgba(0,0,0,0.6)',
+                  WebkitTextStroke: '0.5px rgba(255,255,255,0.1)',
                 }}
               >
                 {char === " " ? "\u00A0" : char}
@@ -92,9 +92,9 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
       {/* Minimal Subtitle */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 0.4, y: 0, letterSpacing: '2em' }}
+        animate={{ opacity: 0.4, y: 0, letterSpacing: '0.5em' }}
         transition={{ delay: 2.5, duration: 3, ease: "easeOut" }}
-        className="relative z-10 mt-20 font-mono text-[9px] uppercase text-white tracking-[2em] mix-blend-plus-lighter"
+        className="relative z-10 mt-8 sm:mt-12 md:mt-20 font-mono text-[7px] sm:text-[8px] md:text-[9px] uppercase text-white tracking-[0.5em] sm:tracking-[1em] md:tracking-[2em] mix-blend-plus-lighter"
       >
         Odyssey Perfected
       </motion.div>
@@ -104,7 +104,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
         initial={{ opacity: 0, y: 50, filter: 'blur(15px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ delay: 3.8, duration: 2, ease: [0.19, 1, 0.22, 1] }}
-        className="relative z-10 mt-32"
+        className="relative z-10 mt-12 sm:mt-20 md:mt-32"
       >
         <motion.button
           whileHover={{ 
@@ -116,7 +116,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
           }}
           whileTap={{ scale: 0.98 }}
           onClick={onReplay}
-          className="px-28 py-6 border border-white/10 text-white font-mono text-[10px] tracking-[0.4em] uppercase transition-all duration-1000 rounded-full bg-white/5 backdrop-blur-3xl overflow-hidden group border-white/20"
+          className="px-10 py-4 sm:px-16 sm:py-5 md:px-28 md:py-6 border border-white/20 text-white font-mono text-[9px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase transition-all duration-1000 rounded-full bg-white/5 backdrop-blur-3xl overflow-hidden group"
         >
           <span className="relative z-10">Initiate Re-entry</span>
           <motion.div 

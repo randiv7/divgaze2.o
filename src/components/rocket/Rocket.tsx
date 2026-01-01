@@ -14,7 +14,7 @@ const Rocket: React.FC<RocketProps> = ({ isIgniting, isLaunching }) => {
 
   return (
     <div className="relative" style={{ transform: 'translateZ(0)' }}>
-      {/* Ground Heat Glow during ignition */}
+      {/* Ground Heat Glow during ignition - Scaled for mobile */}
       <AnimatePresence>
         {isIgniting && (
           <motion.div
@@ -22,7 +22,7 @@ const Rocket: React.FC<RocketProps> = ({ isIgniting, isLaunching }) => {
             animate={{ opacity: [0.4, 0.8, 0.6], scale: [1, 1.2, 1.1] }}
             exit={{ opacity: 0 }}
             transition={{ repeat: Infinity, duration: 0.15 }}
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[100px] bg-orange-600/20 blur-[80px] rounded-full z-0"
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[200px] h-[50px] sm:w-[300px] sm:h-[75px] md:w-[400px] md:h-[100px] bg-orange-600/20 blur-[40px] sm:blur-[60px] md:blur-[80px] rounded-full z-0"
           />
         )}
       </AnimatePresence>
@@ -37,13 +37,14 @@ const Rocket: React.FC<RocketProps> = ({ isIgniting, isLaunching }) => {
         transition={{ repeat: Infinity, duration: 0.04, ease: "linear" }}
         style={{ willChange: 'transform' }}
       >
+        {/* Responsive SVG - Smaller on mobile, full size on desktop */}
         <svg
           width="240"
           height="480"
           viewBox="0 0 200 450"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="overflow-visible"
+          className="overflow-visible w-[140px] h-[280px] sm:w-[180px] sm:h-[360px] md:w-[240px] md:h-[480px]"
         >
           <defs>
             {/* Volumetric hull gradient */}

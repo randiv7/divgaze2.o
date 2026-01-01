@@ -51,10 +51,10 @@ const RocketLaunchSection: React.FC = () => {
     setState(LaunchState.IGNITION);
     setTimeout(() => {
       setState(LaunchState.LAUNCHING);
-    }, 5000); // Changed from 3000 to 5000 to allow 3s countdown + 2s ignition
+    }, 5000);
     setTimeout(() => {
       setState(LaunchState.FINISHED);
-    }, 14000); // Changed from 12000 to 14000 (add 2s to total)
+    }, 14000);
   }, []);
 
   const handleReset = useCallback(() => {
@@ -70,7 +70,7 @@ const RocketLaunchSection: React.FC = () => {
         {state !== LaunchState.FINISHED ? (
           <div key="launch-view" className="relative z-10 w-full h-full flex flex-col items-center justify-center">
             
-            {/* Main Stage: Rocket perfectly centered vertically/horizontally */}
+            {/* Main Stage: Rocket centered */}
             <div className="relative flex-1 w-full flex flex-col items-center justify-center">
               <motion.div
                 animate={state === LaunchState.IGNITION ? {
@@ -131,7 +131,7 @@ const RocketLaunchSection: React.FC = () => {
                           duration: 0.8,
                           ease: "easeInOut"
                         }}
-                        className="text-white font-mono text-[12rem] md:text-[18rem] font-bold leading-none"
+                        className="text-white font-mono text-[8rem] sm:text-[10rem] md:text-[18rem] font-bold leading-none"
                         style={{
                           textShadow: '0 0 60px rgba(255,255,255,0.5), 0 0 100px rgba(255,255,255,0.2)'
                         }}
@@ -143,8 +143,8 @@ const RocketLaunchSection: React.FC = () => {
                 </AnimatePresence>
               </div>
 
-              {/* UI: Placed directly below the rocket in the layout flow */}
-              <div className="absolute bottom-[8%] md:bottom-[6%] w-full flex flex-col items-center">
+              {/* UI: Launch button area */}
+              <div className="absolute bottom-[12%] sm:bottom-[10%] md:bottom-[6%] w-full flex flex-col items-center px-4">
                 <AnimatePresence>
                   {state === LaunchState.IDLE && (
                     <motion.div
@@ -157,11 +157,11 @@ const RocketLaunchSection: React.FC = () => {
                         whileHover={{ scale: 1.05, letterSpacing: '0.6em', backgroundColor: '#fff', color: '#000' }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleLaunch}
-                        className="px-12 py-5 border border-white/40 text-white font-mono text-lg tracking-[0.4em] uppercase transition-all duration-500 rounded-sm backdrop-blur-md bg-white/5 shadow-2xl"
+                        className="px-8 py-4 sm:px-10 sm:py-4 md:px-12 md:py-5 border border-white/40 text-white font-mono text-base sm:text-lg tracking-[0.3em] sm:tracking-[0.4em] uppercase transition-all duration-500 rounded-sm backdrop-blur-md bg-white/5 shadow-2xl"
                       >
                         Launch
                       </motion.button>
-                      <div className="mt-6 opacity-20 font-mono text-[9px] tracking-[0.5em] uppercase">
+                      <div className="mt-4 sm:mt-6 opacity-20 font-mono text-[8px] sm:text-[9px] tracking-[0.4em] sm:tracking-[0.5em] uppercase">
                         Unit-07 // Standby
                       </div>
                     </motion.div>
@@ -175,11 +175,11 @@ const RocketLaunchSection: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Decorative Frame */}
-      <div className="absolute inset-0 pointer-events-none border border-white/5 z-50 m-6 md:m-12" />
+      {/* Decorative Frame - Smaller margin on mobile */}
+      <div className="absolute inset-0 pointer-events-none border border-white/5 z-50 m-3 sm:m-6 md:m-12" />
       
-      {/* Telemetry Display */}
-      <div className="absolute top-12 left-12 hidden md:flex flex-col gap-4 text-white/40 font-mono text-[10px] tracking-widest uppercase z-10">
+      {/* Telemetry Display - Hidden on mobile, shown on md+ */}
+      <div className="absolute top-6 left-6 sm:top-8 sm:left-8 md:top-12 md:left-12 hidden md:flex flex-col gap-4 text-white/40 font-mono text-[10px] tracking-widest uppercase z-10">
         <div className="flex items-center gap-3">
           <div className={`w-2 h-2 rounded-full ${state === LaunchState.IDLE ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-rose-500 shadow-[0_0_12px_#f43f5e]'}`} />
           <span>Status: {LaunchState[state]}</span>

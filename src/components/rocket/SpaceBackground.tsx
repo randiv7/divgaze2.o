@@ -102,7 +102,7 @@ const SpaceBackground: React.FC<SpaceBackgroundProps> = ({ isLaunching }) => {
             {Array.from({ length: 6 }).map((_, i) => (
               <motion.div
                 key={`warp-${i}`}
-                className="absolute bg-white/40 w-[1px] h-[30vh]"
+                className="absolute bg-white/40 w-[1px] h-[20vh] sm:h-[25vh] md:h-[30vh]"
                 style={{ left: `${Math.random() * 100}%` }}
                 animate={{ y: [-1000, 2000] }}
                 transition={{
