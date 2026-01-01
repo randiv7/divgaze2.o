@@ -53,7 +53,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 2 }}
-      className="absolute inset-0 flex flex-col items-center justify-center z-50 overflow-hidden px-4 backdrop-blur-[2px]"
+      className="absolute inset-0 flex flex-col items-center justify-center z-40 overflow-hidden px-4 pt-24 sm:pt-20 md:pt-24 lg:pt-28 xl:pt-32 pb-16 sm:pb-16 md:pb-20 lg:pb-24 xl:pb-28 backdrop-blur-[2px]"
     >
       {/* Soft vignetted overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(0,0,0,0.6)_100%)] pointer-events-none" />
@@ -62,7 +62,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
         variants={container}
         initial="hidden"
         animate="visible"
-        className="relative z-10 flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-6 gap-y-2 sm:gap-y-3 md:gap-y-4 max-w-[95vw] sm:max-w-4xl md:max-w-7xl text-center px-2 sm:px-4"
+        className="relative z-10 flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-8 gap-y-2 sm:gap-y-3 md:gap-y-4 max-w-[95vw] sm:max-w-4xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] text-center px-2 sm:px-4 md:px-6"
       >
         {words.map((word, wordIndex) => (
           <motion.span
@@ -74,7 +74,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
               <motion.span
                 key={charIndex}
                 variants={charVariants}
-                className="inline-block text-white text-2xl sm:text-4xl md:text-6xl lg:text-[8.5rem] font-light tracking-tight sm:tracking-tighter uppercase leading-[0.9] sm:leading-[0.85] md:leading-[0.8] select-none font-space-grotesk"
+                className="inline-block text-white text-2xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-[8.5rem] 2xl:text-[10rem] font-light tracking-tight sm:tracking-tighter uppercase leading-[0.9] sm:leading-[0.85] md:leading-[0.8] select-none font-space-grotesk"
                 style={{ 
                   textShadow: '0 0 80px rgba(255,255,255,0.15), 0 10px 40px rgba(0,0,0,0.5)',
                 }}
@@ -91,7 +91,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 0.4, y: 0, letterSpacing: '0.5em' }}
         transition={{ delay: 1.2, duration: 1.5, ease: "easeOut" }}
-        className="relative z-10 mt-8 sm:mt-12 md:mt-20 font-mono text-[7px] sm:text-[8px] md:text-[9px] uppercase text-white tracking-[0.5em] sm:tracking-[1em] md:tracking-[2em] mix-blend-plus-lighter"
+        className="relative z-10 mt-6 sm:mt-8 md:mt-10 lg:mt-12 xl:mt-14 font-mono text-[7px] sm:text-[8px] md:text-[9px] lg:text-[10px] xl:text-[11px] uppercase text-white tracking-[0.5em] sm:tracking-[1em] md:tracking-[1.5em] lg:tracking-[2em] mix-blend-plus-lighter"
       >
         Odyssey Perfected
       </motion.div>
@@ -101,7 +101,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
         initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ delay: 1.8, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
-        className="relative z-10 mt-12 sm:mt-20 md:mt-32"
+        className="relative z-10 mt-8 sm:mt-12 md:mt-14 lg:mt-16 xl:mt-20"
       >
         <motion.button
           whileHover={{ 
@@ -113,7 +113,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
           }}
           whileTap={{ scale: 0.98 }}
           onClick={onReplay}
-          className="px-10 py-4 sm:px-16 sm:py-5 md:px-28 md:py-6 border border-white/20 text-white font-mono text-[9px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase transition-all duration-1000 rounded-full bg-white/5 backdrop-blur-3xl overflow-hidden group"
+          className="px-10 py-4 sm:px-16 sm:py-5 md:px-20 md:py-5 lg:px-28 lg:py-6 xl:px-32 xl:py-7 border border-white/20 text-white font-mono text-[9px] sm:text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px] tracking-[0.3em] sm:tracking-[0.4em] uppercase transition-all duration-1000 rounded-full bg-white/5 backdrop-blur-3xl overflow-hidden group"
         >
           <span className="relative z-10">Initiate Re-entry</span>
           <motion.div 
