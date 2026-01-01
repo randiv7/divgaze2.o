@@ -51,10 +51,10 @@ const RocketLaunchSection: React.FC = () => {
     setState(LaunchState.IGNITION);
     setTimeout(() => {
       setState(LaunchState.LAUNCHING);
-    }, 3000);
+    }, 5000); // Changed from 3000 to 5000 to allow 3s countdown + 2s ignition
     setTimeout(() => {
       setState(LaunchState.FINISHED);
-    }, 12000); 
+    }, 14000); // Changed from 12000 to 14000 (add 2s to total)
   }, []);
 
   const handleReset = useCallback(() => {
@@ -99,7 +99,7 @@ const RocketLaunchSection: React.FC = () => {
                   }}
                   style={{ willChange: 'transform, opacity' }}
                 >
-                  <Rocket isIgniting={state === LaunchState.IGNITION} isLaunching={state === LaunchState.LAUNCHING} />
+                  <Rocket isIgniting={state === LaunchState.IGNITION && countdown === 0} isLaunching={state === LaunchState.LAUNCHING} />
                 </motion.div>
               </motion.div>
 
