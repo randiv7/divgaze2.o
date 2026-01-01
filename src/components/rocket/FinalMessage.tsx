@@ -14,8 +14,8 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.5,
+        staggerChildren: 0.08,
+        delayChildren: 0.2,
       },
     },
   };
@@ -25,7 +25,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
+        staggerChildren: 0.03,
       },
     },
   };
@@ -33,18 +33,16 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
   const charVariants: Variants = {
     hidden: { 
       opacity: 0, 
-      y: -120,
-      filter: "blur(30px)",
-      scale: 1.15,
+      y: 40,
+      filter: "blur(10px)",
     },
     visible: {
       opacity: 1,
       y: 0,
       filter: "blur(0px)",
-      scale: 1,
       transition: {
-        duration: 2.2,
-        ease: [0.16, 1, 0.3, 1],
+        duration: 0.8,
+        ease: [0.25, 0.1, 0.25, 1],
       },
     },
   };
@@ -76,10 +74,9 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
               <motion.span
                 key={charIndex}
                 variants={charVariants}
-                className="inline-block text-white text-2xl sm:text-4xl md:text-6xl lg:text-[8.5rem] font-black tracking-tight sm:tracking-tighter uppercase leading-[0.9] sm:leading-[0.85] md:leading-[0.8] select-none"
+                className="inline-block text-white text-2xl sm:text-4xl md:text-6xl lg:text-[8.5rem] font-light tracking-tight sm:tracking-tighter uppercase leading-[0.9] sm:leading-[0.85] md:leading-[0.8] select-none font-space-grotesk"
                 style={{ 
-                  textShadow: '0 0 40px rgba(255,255,255,0.2), 0 10px 30px rgba(0,0,0,0.6)',
-                  WebkitTextStroke: '0.5px rgba(255,255,255,0.1)',
+                  textShadow: '0 0 80px rgba(255,255,255,0.15), 0 10px 40px rgba(0,0,0,0.5)',
                 }}
               >
                 {char === " " ? "\u00A0" : char}
@@ -93,7 +90,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 0.4, y: 0, letterSpacing: '0.5em' }}
-        transition={{ delay: 2.5, duration: 3, ease: "easeOut" }}
+        transition={{ delay: 1.2, duration: 1.5, ease: "easeOut" }}
         className="relative z-10 mt-8 sm:mt-12 md:mt-20 font-mono text-[7px] sm:text-[8px] md:text-[9px] uppercase text-white tracking-[0.5em] sm:tracking-[1em] md:tracking-[2em] mix-blend-plus-lighter"
       >
         Odyssey Perfected
@@ -101,9 +98,9 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
 
       {/* Premium Return CTA */}
       <motion.div
-        initial={{ opacity: 0, y: 50, filter: 'blur(15px)' }}
+        initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        transition={{ delay: 3.8, duration: 2, ease: [0.19, 1, 0.22, 1] }}
+        transition={{ delay: 1.8, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
         className="relative z-10 mt-12 sm:mt-20 md:mt-32"
       >
         <motion.button

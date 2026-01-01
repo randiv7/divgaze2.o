@@ -54,7 +54,7 @@ const RocketLaunchSection: React.FC = () => {
     }, 5000);
     setTimeout(() => {
       setState(LaunchState.FINISHED);
-    }, 14000);
+    }, 10000); // 5s ignition + ~4s flight + 1s after passing top
   }, []);
 
   const handleReset = useCallback(() => {
