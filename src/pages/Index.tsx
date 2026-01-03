@@ -75,11 +75,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Rocket Launch Section */}
-      <RocketLaunchSection />
-
       {/* About Section */}
       <AboutSection />
+
+      {/* Rocket Launch Section */}
+      <RocketLaunchSection />
 
       {/* Contact Section */}
       <ContactSection />
