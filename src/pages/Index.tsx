@@ -6,6 +6,7 @@ import { ServiceCard } from '@/components/shared/ServiceCard';
 import { KineticHero } from '@/components/shared/KineticHero';
 import { ContactSection } from '@/components/shared/ContactSection';
 import { AboutSection } from '@/components/shared/AboutSection';
+import { MarqueeSection } from '@/components/shared/MarqueeSection';
 import StarField from '@/components/shared/StarField';
 import RocketLaunchSection from '@/components/rocket/RocketLaunchSection';
 
@@ -80,6 +81,9 @@ const Index = () => {
 
       {/* Rocket Launch Section */}
       <RocketLaunchSection />
+
+      {/* Marquee Animation Section */}
+      <MarqueeSection />
 
       {/* Contact Section */}
       <ContactSection />
