@@ -10,23 +10,9 @@ export const CustomCursor: React.FC = () => {
   const [hoverText, setHoverText] = useState("");
   const [isDarkBg, setIsDarkBg] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [isInExcludedArea, setIsInExcludedArea] = useState(false);
 
   // Only show custom cursor on landing page
   const isLandingPage = location.pathname === '/';
-
-  // Control body cursor style based on page
-  useEffect(() => {
-    if (isLandingPage && !isTouchDevice) {
-      document.body.style.cursor = 'none';
-    } else {
-      document.body.style.cursor = 'auto';
-    }
-
-    return () => {
-      document.body.style.cursor = 'auto';
-    };
-  }, [isLandingPage, isTouchDevice]);
 
   useEffect(() => {
     // Check if device is touch-enabled (mobile/tablet)
@@ -39,13 +25,9 @@ export const CustomCursor: React.FC = () => {
     if (isTouchDevice || !isLandingPage) return;
 
     const moveCursor = (e: MouseEvent) => {
-      const element = document.elementFromPoint(e.clientX, e.clientY);
+      // Only move cursor when hovering on clickable-media
+      if (!isHovering) return;
       
-      // Check if cursor is in navigation or footer
-      const isInNav = element?.closest('nav') !== null;
-      const isInFooter = element?.closest('footer') !== null;
-      setIsInExcludedArea(isInNav || isInFooter);
-
       gsap.to(followerRef.current, {
         x: e.clientX,
         y: e.clientY,
@@ -54,10 +36,10 @@ export const CustomCursor: React.FC = () => {
       });
 
       // Check background color at cursor position
+      const element = document.elementFromPoint(e.clientX, e.clientY);
       if (element) {
         const section = element.closest('section');
         
-        // Check if we're in a dark section (black background or dark class)
         if (section) {
           const sectionBg = window.getComputedStyle(section).backgroundColor;
           const isBlackBg = sectionBg === 'rgb(0, 0, 0)' || section.classList.contains('bg-black') || section.classList.contains('bg-primary');
@@ -83,6 +65,13 @@ export const CustomCursor: React.FC = () => {
       if (target.closest('.clickable-media')) {
         setIsHovering(true);
         setHoverText("VIEW");
+        
+        // Position cursor at current mouse position when hover starts
+        const mouseEvent = e as MouseEvent;
+        gsap.set(followerRef.current, {
+          x: mouseEvent.clientX,
+          y: mouseEvent.clientY
+        });
       } 
       else {
         setIsHovering(false);
@@ -104,7 +93,7 @@ export const CustomCursor: React.FC = () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isTouchDevice, isLandingPage]);
+  }, [isTouchDevice, isLandingPage, isHovering]);
 
   // Don't render on touch devices or non-landing pages
   if (isTouchDevice || !isLandingPage) return null;
@@ -112,21 +101,14 @@ export const CustomCursor: React.FC = () => {
   // Dynamic colors based on background
   const followerHoverBg = isDarkBg ? 'bg-white' : 'bg-black';
   const followerHoverText = isDarkBg ? 'text-black' : 'text-white';
-  const followerTint = isDarkBg ? 'rgba(255, 255, 255, 0.18)' : 'rgba(0, 0, 0, 0.08)';
 
   return (
     <div 
       ref={followerRef} 
       className={`fixed top-0 left-0 rounded-full pointer-events-none z-[9998] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center transition-all duration-300 ease-out
-        ${isHovering ? `w-28 h-28 ${followerHoverBg} ${followerHoverText}` : `w-16 h-16`}
+        ${isHovering ? `w-28 h-28 ${followerHoverBg} ${followerHoverText} opacity-100` : 'w-0 h-0 opacity-0'}
         ${isClicking ? 'scale-75' : 'scale-100'}
-        ${isInExcludedArea ? 'opacity-0' : 'opacity-100'}
       `}
-      style={{
-        backdropFilter: 'blur(3px)',
-        WebkitBackdropFilter: 'blur(3px)',
-        backgroundColor: isHovering ? undefined : followerTint
-      }}
     >
       {isHovering && hoverText && (
         <span className="text-xs font-bold tracking-widest leading-none">{hoverText}</span>

@@ -82,14 +82,6 @@ export const AboutSection: React.FC = () => {
           <a href="#" className="hover:text-zinc-400 transition-colors">Network</a>
         </div>
       </div>
-
-      {/* Hide cursor in this section */}
-      <style>{`
-        #about,
-        #about * {
-          cursor: none !important;
-        }
-      `}</style>
     </section>
   );
 };
