@@ -1,122 +1,205 @@
-import React, { useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 interface SpaceBackgroundProps {
   isLaunching: boolean;
 }
 
 interface Star {
-  id: number;
   x: number;
   y: number;
   size: number;
-  duration: number;
-  color: string;
-  twinkleDelay: number;
+  opacity: number;
+  distance: number;
+  angle: number;
+  angularVelocity: number;
+  speed: number;
+  streakLength: number;
 }
 
 const SpaceBackground: React.FC<SpaceBackgroundProps> = ({ isLaunching }) => {
-  const starColors = ['#ffffff', '#e0f2fe', '#fef3c7', '#ffedd5', '#f8fafc'];
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const starsRef = useRef<Star[]>([]);
+  const isLaunchingRef = useRef(isLaunching);
+  const mouseRef = useRef({ x: 0, y: 0 });
 
-  const generateStars = (count: number, sizeRange: [number, number]): Star[] => {
-    return Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * (sizeRange[1] - sizeRange[0]) + sizeRange[0],
-      duration: Math.random() * 12 + 10,
-      color: starColors[Math.floor(Math.random() * starColors.length)],
-      twinkleDelay: Math.random() * 5,
-    }));
-  };
+  // Update launching ref when prop changes
+  useEffect(() => {
+    isLaunchingRef.current = isLaunching;
+  }, [isLaunching]);
 
-  const starLayers = useMemo(() => [
-    { stars: generateStars(80, [0.3, 0.7]), speedFactor: 0.5, opacity: 0.15 }, // Distant background
-    { stars: generateStars(45, [0.8, 1.5]), speedFactor: 1.2, opacity: 0.35 }, // Mid-field
-    { stars: generateStars(15, [1.8, 2.8]), speedFactor: 3.0, opacity: 0.6 },  // Near-field
-  ], []);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      // Render static stars
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const count = Math.floor((canvas.width * canvas.height) / 1000);
+      ctx.fillStyle = '#fff';
+
+      for (let i = 0; i < count; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const size = Math.random() * 1.5;
+
+        ctx.globalAlpha = Math.random();
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      return;
+    }
+
+    let animationFrameId: number;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStars();
+    };
+
+    const initStars = () => {
+      starsRef.current = [];
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const count = Math.floor((canvas.width * canvas.height) / 2500); // Reduced density
+
+      for (let i = 0; i < count; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+
+        const dx = x - centerX;
+        const dy = y - centerY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
+
+        starsRef.current.push({
+          x,
+          y,
+          size: Math.random() * 1.5 + 0.3,
+          opacity: Math.random() * 0.5 + 0.2,
+          distance,
+          angle,
+          angularVelocity: -(Math.random() * 0.002 + 0.0005),
+          speed: Math.random() * 15 + 8, // Faster speed
+          streakLength: 0,
+        });
+      }
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw subtle gradient background
+      const gradient = ctx.createRadialGradient(
+        canvas.width * 0.2, canvas.height * 0.3, 0,
+        canvas.width * 0.2, canvas.height * 0.3, canvas.width * 0.5
+      );
+      gradient.addColorStop(0, 'rgba(14, 165, 233, 0.03)');
+      gradient.addColorStop(1, 'transparent');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const launching = isLaunchingRef.current;
+
+      starsRef.current.forEach((star) => {
+        if (launching) {
+          // Launch mode: stars streak downward fast
+          star.y += star.speed;
+          star.streakLength = Math.min(star.streakLength + 8, star.size * 80); // Longer streaks, faster grow
+
+          // Reset star when it goes off screen
+          if (star.y > canvas.height + 50) {
+            star.y = -star.streakLength - Math.random() * 100;
+            star.x = Math.random() * canvas.width;
+            star.streakLength = 0;
+          }
+
+          // Draw long streak line
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(255, 255, 255, ${star.opacity * 0.6})`;
+          ctx.lineWidth = star.size * 0.8;
+          ctx.lineCap = 'round';
+          ctx.moveTo(star.x, star.y - star.streakLength);
+          ctx.lineTo(star.x, star.y);
+          ctx.stroke();
+
+          // Draw bright dot at head
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+          ctx.arc(star.x, star.y, star.size * 1.2, 0, Math.PI * 2);
+          ctx.fill();
+
+        } else {
+          // Normal mode: rotating stars with twinkle
+          star.angle += star.angularVelocity;
+          star.streakLength = Math.max(star.streakLength - 1, 0);
+
+          // Mouse parallax effect
+          const mX = (mouseRef.current.x - centerX) * 0.02;
+          const mY = (mouseRef.current.y - centerY) * 0.02;
+
+          star.x = centerX + Math.cos(star.angle) * star.distance + mX;
+          star.y = centerY + Math.sin(star.angle) * star.distance + mY;
+
+          // Draw star with glow
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Add subtle glow for larger stars
+          if (star.size > 1.2) {
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * 0.3})`;
+            ctx.arc(star.x, star.y, star.size * 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Random twinkle
+          if (Math.random() > 0.98) {
+            star.opacity = Math.random() * 0.6 + 0.2;
+          }
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseRef.current.x = e.clientX;
+      mouseRef.current.y = e.clientY;
+    };
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', handleMouseMove);
+    resize();
+    draw();
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black" style={{ transform: 'translateZ(0)' }}>
-      {/* Deep Space Atmosphere - Subtle gradients for depth */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_30%,_rgba(14,165,233,0.05)_0%,_transparent_50%)]" />
-        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_70%,_rgba(168,85,247,0.03)_0%,_transparent_50%)]" />
-      </div>
-
-      {starLayers.map((layer, layerIdx) => (
-        <div key={layerIdx} className="absolute inset-0" style={{ willChange: isLaunching ? 'transform' : 'auto' }}>
-          {layer.stars.map((star) => (
-            <motion.div
-              key={`${layerIdx}-${star.id}`}
-              className="absolute rounded-full"
-              style={{
-                left: `${star.x}%`,
-                top: `${star.y}%`,
-                width: star.size,
-                height: star.size,
-                backgroundColor: star.color,
-                boxShadow: star.size > 2 ? `0 0 ${star.size * 2}px ${star.color}` : 'none',
-                willChange: 'transform, opacity, height'
-              }}
-              animate={isLaunching ? {
-                y: [0, 1500],
-                height: [star.size, star.size * 30],
-                opacity: [layer.opacity, layer.opacity, 0]
-              } : {
-                opacity: [layer.opacity * 0.4, layer.opacity, layer.opacity * 0.4],
-                scale: [1, 1.1, 1],
-              }}
-              transition={isLaunching ? {
-                duration: star.duration / (layer.speedFactor * 6),
-                repeat: Infinity,
-                ease: "linear",
-                delay: -(Math.random() * 10)
-              } : {
-                duration: 3 + Math.random() * 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: star.twinkleDelay
-              }}
-            />
-          ))}
-        </div>
-      ))}
-      
-      {/* Ground/Planetary Reflection - Fades out on launch */}
-      <motion.div 
-        className="absolute inset-0 bg-gradient-to-t from-blue-900/10 via-transparent to-transparent pointer-events-none"
-        animate={isLaunching ? { opacity: 0 } : { opacity: 1 }}
-        transition={{ duration: 5, ease: "easeOut" }}
-      />
-
-      {/* Speed Lines for Warp feel */}
-      <AnimatePresence>
-        {isLaunching && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.15 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-10"
-          >
-            {Array.from({ length: 6 }).map((_, i) => (
-              <motion.div
-                key={`warp-${i}`}
-                className="absolute bg-white/40 w-[1px] h-[20vh] sm:h-[25vh] md:h-[30vh]"
-                style={{ left: `${Math.random() * 100}%` }}
-                animate={{ y: [-1000, 2000] }}
-                transition={{
-                  duration: 0.2 + Math.random() * 0.3,
-                  repeat: Infinity,
-                  ease: "linear",
-                  delay: Math.random()
-                }}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 pointer-events-none z-0 bg-black"
+      style={{ filter: 'blur(0.3px)' }}
+    />
   );
 };
 
