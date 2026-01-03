@@ -7,13 +7,14 @@ interface SpaceBackgroundProps {
 interface Star {
   x: number;
   y: number;
+  baseY: number;
   size: number;
   opacity: number;
   distance: number;
   angle: number;
   angularVelocity: number;
   speed: number;
-  streakLength: number;
+  layer: number; // 0 = far, 1 = mid, 2 = near
 }
 
 const SpaceBackground: React.FC<SpaceBackgroundProps> = ({ isLaunching }) => {
@@ -21,8 +22,8 @@ const SpaceBackground: React.FC<SpaceBackgroundProps> = ({ isLaunching }) => {
   const starsRef = useRef<Star[]>([]);
   const isLaunchingRef = useRef(isLaunching);
   const mouseRef = useRef({ x: 0, y: 0 });
+  const transitionRef = useRef(0); // 0 = idle, 1 = full launch
 
-  // Update launching ref when prop changes
   useEffect(() => {
     isLaunchingRef.current = isLaunching;
   }, [isLaunching]);
@@ -34,28 +35,23 @@ const SpaceBackground: React.FC<SpaceBackgroundProps> = ({ isLaunching }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (prefersReducedMotion) {
-      // Render static stars
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-
-      const count = Math.floor((canvas.width * canvas.height) / 1000);
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      const count = Math.floor((canvas.width * canvas.height) / 3000);
       ctx.fillStyle = '#fff';
-
+      
       for (let i = 0; i < count; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const size = Math.random() * 1.5;
-
-        ctx.globalAlpha = Math.random();
+        ctx.globalAlpha = Math.random() * 0.5 + 0.1;
         ctx.beginPath();
-        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 1.2, 0, Math.PI * 2);
         ctx.fill();
       }
-
       return;
     }
 
@@ -71,109 +67,116 @@ const SpaceBackground: React.FC<SpaceBackgroundProps> = ({ isLaunching }) => {
       starsRef.current = [];
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const count = Math.floor((canvas.width * canvas.height) / 2500); // Reduced density
+      const count = Math.floor((canvas.width * canvas.height) / 3500);
 
       for (let i = 0; i < count; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-
         const dx = x - centerX;
         const dy = y - centerY;
         const distance = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx);
+        
+        // Assign layer based on random distribution
+        const layerRand = Math.random();
+        const layer = layerRand < 0.6 ? 0 : layerRand < 0.85 ? 1 : 2;
+        
+        // Size and speed based on layer (parallax)
+        const layerSize = [0.5, 1.0, 1.8][layer];
+        const layerSpeed = [6, 14, 28][layer];
+        const layerOpacity = [0.25, 0.45, 0.7][layer];
 
         starsRef.current.push({
           x,
           y,
-          size: Math.random() * 1.5 + 0.3,
-          opacity: Math.random() * 0.5 + 0.2,
+          baseY: y,
+          size: Math.random() * layerSize + 0.3,
+          opacity: Math.random() * layerOpacity + 0.1,
           distance,
           angle,
-          angularVelocity: -(Math.random() * 0.002 + 0.0005),
-          speed: Math.random() * 15 + 8, // Faster speed
-          streakLength: 0,
+          angularVelocity: -(Math.random() * 0.0015 + 0.0003),
+          speed: layerSpeed + Math.random() * layerSpeed * 0.5,
+          layer,
         });
       }
     };
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Smooth transition
+      const targetTransition = isLaunchingRef.current ? 1 : 0;
+      transitionRef.current += (targetTransition - transitionRef.current) * 0.08;
+      const t = transitionRef.current;
 
-      // Draw subtle gradient background
-      const gradient = ctx.createRadialGradient(
-        canvas.width * 0.2, canvas.height * 0.3, 0,
-        canvas.width * 0.2, canvas.height * 0.3, canvas.width * 0.5
-      );
-      gradient.addColorStop(0, 'rgba(14, 165, 233, 0.03)');
-      gradient.addColorStop(1, 'transparent');
-      ctx.fillStyle = gradient;
+      // Clear with black
+      ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const launching = isLaunchingRef.current;
 
       starsRef.current.forEach((star) => {
-        if (launching) {
-          // Launch mode: stars streak downward fast
-          star.y += star.speed;
-          star.streakLength = Math.min(star.streakLength + 8, star.size * 80); // Longer streaks, faster grow
-
-          // Reset star when it goes off screen
-          if (star.y > canvas.height + 50) {
-            star.y = -star.streakLength - Math.random() * 100;
-            star.x = Math.random() * canvas.width;
-            star.streakLength = 0;
-          }
-
-          // Draw long streak line
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(255, 255, 255, ${star.opacity * 0.6})`;
-          ctx.lineWidth = star.size * 0.8;
-          ctx.lineCap = 'round';
-          ctx.moveTo(star.x, star.y - star.streakLength);
-          ctx.lineTo(star.x, star.y);
-          ctx.stroke();
-
-          // Draw bright dot at head
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-          ctx.arc(star.x, star.y, star.size * 1.2, 0, Math.PI * 2);
-          ctx.fill();
-
-        } else {
-          // Normal mode: rotating stars with twinkle
+        // Blend between rotation mode and streak mode
+        if (t < 0.01) {
+          // Pure rotation mode
           star.angle += star.angularVelocity;
-          star.streakLength = Math.max(star.streakLength - 1, 0);
-
-          // Mouse parallax effect
-          const mX = (mouseRef.current.x - centerX) * 0.02;
-          const mY = (mouseRef.current.y - centerY) * 0.02;
-
+          
+          const mX = (mouseRef.current.x - centerX) * 0.015;
+          const mY = (mouseRef.current.y - centerY) * 0.015;
+          
           star.x = centerX + Math.cos(star.angle) * star.distance + mX;
           star.y = centerY + Math.sin(star.angle) * star.distance + mY;
 
-          // Draw star with glow
+          // Draw simple star
+          ctx.globalAlpha = star.opacity;
+          ctx.fillStyle = '#fff';
           ctx.beginPath();
-          ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
           ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
           ctx.fill();
 
-          // Add subtle glow for larger stars
-          if (star.size > 1.2) {
-            ctx.beginPath();
-            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * 0.3})`;
-            ctx.arc(star.x, star.y, star.size * 2, 0, Math.PI * 2);
-            ctx.fill();
+          // Twinkle
+          if (Math.random() > 0.99) {
+            star.opacity = Math.random() * [0.25, 0.45, 0.7][star.layer] + 0.1;
+          }
+        } else {
+          // Streak/warp mode
+          star.y += star.speed * t;
+
+          // Reset when off screen
+          if (star.y > canvas.height + 100) {
+            star.y = -50 - Math.random() * 100;
+            star.x = Math.random() * canvas.width;
           }
 
-          // Random twinkle
-          if (Math.random() > 0.98) {
-            star.opacity = Math.random() * 0.6 + 0.2;
-          }
+          // Calculate streak length based on transition and layer
+          const streakLength = star.speed * t * 3 * (star.layer + 1);
+
+          // Draw streak with gradient
+          const gradient = ctx.createLinearGradient(
+            star.x, star.y - streakLength,
+            star.x, star.y
+          );
+          gradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
+          gradient.addColorStop(0.7, `rgba(255, 255, 255, ${star.opacity * 0.3 * t})`);
+          gradient.addColorStop(1, `rgba(255, 255, 255, ${star.opacity * t})`);
+
+          ctx.beginPath();
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = star.size * (0.5 + t * 0.5);
+          ctx.lineCap = 'round';
+          ctx.moveTo(star.x, star.y - streakLength);
+          ctx.lineTo(star.x, star.y);
+          ctx.stroke();
+
+          // Bright head
+          ctx.globalAlpha = star.opacity * (0.5 + t * 0.5);
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size * (1 + t * 0.3), 0, Math.PI * 2);
+          ctx.fill();
         }
       });
 
+      ctx.globalAlpha = 1;
       animationFrameId = requestAnimationFrame(draw);
     };
 
@@ -197,8 +200,7 @@ const SpaceBackground: React.FC<SpaceBackgroundProps> = ({ isLaunching }) => {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 pointer-events-none z-0 bg-black"
-      style={{ filter: 'blur(0.3px)' }}
+      className="absolute inset-0 pointer-events-none z-0"
     />
   );
 };
