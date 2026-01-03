@@ -66,9 +66,14 @@ const RocketLaunchSection: React.FC = () => {
     <main className="relative w-full h-screen overflow-hidden bg-black flex flex-col items-center justify-center select-none">
       <SpaceBackground isLaunching={state === LaunchState.LAUNCHING} />
       
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         {state !== LaunchState.FINISHED ? (
-          <div key="launch-view" className="relative z-10 w-full h-full flex flex-col items-center justify-center">
+          <motion.div 
+            key="launch-view" 
+            className="relative z-10 w-full h-full flex flex-col items-center justify-center"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
             
             {/* Main Stage: Rocket centered */}
             <div className="relative flex-1 w-full flex flex-col items-center justify-center">
@@ -169,7 +174,7 @@ const RocketLaunchSection: React.FC = () => {
                 </AnimatePresence>
               </div>
             </div>
-          </div>
+          </motion.div>
         ) : (
           <FinalMessage key="final-message" onReplay={handleReset} />
         )}

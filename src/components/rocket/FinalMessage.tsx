@@ -52,7 +52,7 @@ const FinalMessage: React.FC<FinalMessageProps> = ({ onReplay }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 2 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
       className="absolute inset-0 flex flex-col items-center justify-center z-40 overflow-hidden px-4 pt-24 sm:pt-20 md:pt-24 lg:pt-28 xl:pt-32 pb-16 sm:pb-16 md:pb-20 lg:pb-24 xl:pb-28 backdrop-blur-[2px]"
     >
       {/* Soft vignetted overlay */}
