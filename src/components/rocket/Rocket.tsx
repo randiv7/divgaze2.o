@@ -22,7 +22,7 @@ const Rocket: React.FC<RocketProps> = ({ isIgniting, isLaunching }) => {
             animate={{ opacity: [0.4, 0.8, 0.6], scale: [1, 1.2, 1.1] }}
             exit={{ opacity: 0 }}
             transition={{ repeat: Infinity, duration: 0.15 }}
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[200px] h-[50px] sm:w-[300px] sm:h-[75px] md:w-[350px] md:h-[90px] lg:w-[400px] lg:h-[100px] xl:w-[450px] xl:h-[110px] 2xl:w-[500px] 2xl:h-[120px] bg-orange-600/20 blur-[40px] sm:blur-[60px] md:blur-[70px] lg:blur-[80px] xl:blur-[90px] 2xl:blur-[100px] rounded-full z-0"
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[200px] h-[50px] sm:w-[300px] sm:h-[75px] md:w-[300px] md:h-[80px] lg:w-[350px] lg:h-[90px] xl:w-[380px] xl:h-[95px] 2xl:w-[400px] 2xl:h-[100px] bg-orange-600/20 blur-[40px] sm:blur-[60px] md:blur-[65px] lg:blur-[70px] xl:blur-[75px] 2xl:blur-[80px] rounded-full z-0"
           />
         )}
       </AnimatePresence>
@@ -44,7 +44,7 @@ const Rocket: React.FC<RocketProps> = ({ isIgniting, isLaunching }) => {
           viewBox="0 0 200 450"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="overflow-visible w-[140px] h-[280px] sm:w-[180px] sm:h-[360px] md:w-[220px] md:h-[440px] lg:w-[240px] lg:h-[480px] xl:w-[280px] xl:h-[560px] 2xl:w-[320px] 2xl:h-[640px]"
+          className="overflow-visible w-[140px] h-[280px] sm:w-[180px] sm:h-[360px] md:w-[180px] md:h-[360px] lg:w-[200px] lg:h-[400px] xl:w-[220px] xl:h-[440px] 2xl:w-[240px] 2xl:h-[480px]"
         >
           <defs>
             {/* Volumetric hull gradient */}

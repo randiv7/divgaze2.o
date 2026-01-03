@@ -175,8 +175,8 @@ const RocketLaunchSection: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Decorative Frame */}
-      <div className="absolute inset-0 pointer-events-none border border-white/5 z-40 m-3 sm:m-6 md:m-8 lg:m-12 xl:m-16" />
+      {/* Decorative Frame - Hidden to remove white line */}
+      {/* <div className="absolute inset-0 pointer-events-none border border-white/5 z-40 m-3 sm:m-6 md:m-8 lg:m-12 xl:m-16" /> */}
       
       {/* Telemetry Display */}
       <div className="absolute top-6 left-6 sm:top-8 sm:left-8 md:top-10 md:left-10 lg:top-12 lg:left-12 xl:top-16 xl:left-16 hidden md:flex flex-col gap-4 text-white/40 font-mono text-[10px] lg:text-[11px] xl:text-[12px] tracking-widest uppercase z-10">
