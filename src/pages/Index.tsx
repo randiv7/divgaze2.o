@@ -8,7 +8,6 @@ import { ContactSection } from '@/components/shared/ContactSection';
 import { AboutSection } from '@/components/shared/AboutSection';
 import { MarqueeSection } from '@/components/shared/MarqueeSection';
 import StarField from '@/components/shared/StarField';
-import RocketLaunchSection from '@/components/rocket/RocketLaunchSection';
 
 const services = [
   {
@@ -78,9 +77,6 @@ const Index = () => {
 
       {/* About Section */}
       <AboutSection />
-
-      {/* Rocket Launch Section */}
-      <RocketLaunchSection />
 
       {/* Marquee Animation Section */}
       <MarqueeSection />
