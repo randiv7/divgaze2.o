@@ -1,8 +1,80 @@
-import React, { Suspense, useState, useMemo, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { Suspense, useState, useMemo, useEffect, useRef } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import Earth from './Earth';
+
+// Component to handle earth-only drag detection
+const JsonyControls: React.FC<{
+  onHoverStart: () => void;
+  onHoverEnd: () => void;
+  rotateSpeed: number;
+}> = ({ onHoverStart, onHoverEnd, rotateSpeed }) => {
+  const controlsRef = useRef<any>(null);
+  const { camera, gl, scene } = useThree();
+  const raycaster = useMemo(() => new THREE.Raycaster(), []);
+  const pointer = useMemo(() => new THREE.Vector2(), []);
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+
+    const getPointerPosition = (e: TouchEvent | MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+      pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+    };
+
+    const isOnEarth = (e: TouchEvent | MouseEvent) => {
+      getPointerPosition(e);
+      raycaster.setFromCamera(pointer, camera);
+      const intersects = raycaster.intersectObjects(scene.children, true);
+      return intersects.some(i => i.object.type === 'Mesh' && i.object.geometry.type === 'SphereGeometry');
+    };
+
+    const handleStart = (e: TouchEvent | MouseEvent) => {
+      if (controlsRef.current) {
+        const onEarth = isOnEarth(e);
+        controlsRef.current.enabled = onEarth;
+        if (onEarth) {
+          onHoverStart();
+        }
+      }
+    };
+
+    const handleEnd = () => {
+      if (controlsRef.current) {
+        controlsRef.current.enabled = true;
+        onHoverEnd();
+      }
+    };
+
+    canvas.addEventListener('mousedown', handleStart);
+    canvas.addEventListener('touchstart', handleStart, { passive: true });
+    canvas.addEventListener('mouseup', handleEnd);
+    canvas.addEventListener('touchend', handleEnd);
+
+    return () => {
+      canvas.removeEventListener('mousedown', handleStart);
+      canvas.removeEventListener('touchstart', handleStart);
+      canvas.removeEventListener('mouseup', handleEnd);
+      canvas.removeEventListener('touchend', handleEnd);
+    };
+  }, [camera, gl, scene, raycaster, pointer, onHoverStart, onHoverEnd]);
+
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      enablePan={false}
+      enableZoom={false}
+      enableRotate={true}
+      rotateSpeed={rotateSpeed}
+      enableDamping={true}
+      dampingFactor={0.05}
+    />
+  );
+};
 
 const EarthScene: React.FC = () => {
   const [autoRotate, setAutoRotate] = useState(true);
@@ -66,8 +138,7 @@ const EarthScene: React.FC = () => {
       dpr={screenSize === 'mobile' ? [1, 1.5] : [1, 2]}
       style={{ 
         position: 'absolute', 
-        inset: 0,
-        touchAction: screenSize === 'mobile' ? 'pan-y' : 'none'
+        inset: 0
       }}
     >
       <Suspense fallback={null}>
@@ -100,21 +171,16 @@ const EarthScene: React.FC = () => {
           showWeather={showWeather}
         />
 
-        <OrbitControls 
-          enablePan={false}
-          enableZoom={false}
-          enableRotate={true}
-          rotateSpeed={screenSize === 'mobile' ? 0.3 : 0.5}
-          enableDamping={true}
-          dampingFactor={0.05}
-          onStart={() => {
+        <JsonyControls
+          onHoverStart={() => {
             setIsHovered(true);
             setAutoRotate(false);
           }}
-          onEnd={() => {
+          onHoverEnd={() => {
             setIsHovered(false);
             setTimeout(() => setAutoRotate(true), 2000);
           }}
+          rotateSpeed={screenSize === 'mobile' ? 0.3 : 0.5}
         />
       </Suspense>
     </Canvas>
