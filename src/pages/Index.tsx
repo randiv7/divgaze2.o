@@ -8,6 +8,7 @@ import { ContactSection } from '@/components/shared/ContactSection';
 import { AboutSection } from '@/components/shared/AboutSection';
 import { MarqueeSection } from '@/components/shared/MarqueeSection';
 import StarField from '@/components/shared/StarField';
+import LiquidReveal from '@/components/shared/LiquidReveal';
 
 const services = [
   {
@@ -77,6 +78,9 @@ const Index = () => {
 
       {/* About Section */}
       <AboutSection />
+
+      {/* Liquid Reveal Animation Section */}
+      <LiquidReveal imageUrl="/sl.png" ghostText="Vision" />
 
       {/* Marquee Animation Section */}
       <MarqueeSection />
