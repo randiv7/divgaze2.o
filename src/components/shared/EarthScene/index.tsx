@@ -66,7 +66,8 @@ const EarthScene: React.FC = () => {
       dpr={screenSize === 'mobile' ? [1, 1.5] : [1, 2]}
       style={{ 
         position: 'absolute', 
-        inset: 0
+        inset: 0,
+        touchAction: screenSize === 'mobile' ? 'pan-y' : 'none'
       }}
     >
       <Suspense fallback={null}>
