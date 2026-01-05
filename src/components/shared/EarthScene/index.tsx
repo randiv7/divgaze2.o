@@ -14,6 +14,7 @@ const JsonyControls: React.FC<{
   const { camera, gl, scene } = useThree();
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
   const pointer = useMemo(() => new THREE.Vector2(), []);
+  const isDraggingEarth = useRef(false);
 
   useEffect(() => {
     const canvas = gl.domElement;
@@ -36,33 +37,62 @@ const JsonyControls: React.FC<{
       });
     };
 
-    const handleStart = (e: TouchEvent | MouseEvent) => {
+    const handleTouchStart = (e: TouchEvent) => {
+      const onEarth = isOnEarth(e);
+      isDraggingEarth.current = onEarth;
       if (controlsRef.current) {
-        const onEarth = isOnEarth(e);
         controlsRef.current.enabled = onEarth;
-        if (onEarth) {
-          onHoverStart();
-        }
+      }
+      if (onEarth) {
+        onHoverStart();
       }
     };
 
-    const handleEnd = () => {
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDraggingEarth.current) {
+        e.preventDefault();
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isDraggingEarth.current = false;
       if (controlsRef.current) {
-        controlsRef.current.enabled = true;
-        onHoverEnd();
+        controlsRef.current.enabled = false;
+      }
+      onHoverEnd();
+    };
+
+    const handleMouseDown = (e: MouseEvent) => {
+      const onEarth = isOnEarth(e);
+      isDraggingEarth.current = onEarth;
+      if (controlsRef.current) {
+        controlsRef.current.enabled = onEarth;
+      }
+      if (onEarth) {
+        onHoverStart();
       }
     };
 
-    canvas.addEventListener('mousedown', handleStart);
-    canvas.addEventListener('touchstart', handleStart, { passive: true });
-    canvas.addEventListener('mouseup', handleEnd);
-    canvas.addEventListener('touchend', handleEnd);
+    const handleMouseUp = () => {
+      isDraggingEarth.current = false;
+      if (controlsRef.current) {
+        controlsRef.current.enabled = false;
+      }
+      onHoverEnd();
+    };
+
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd);
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mouseup', handleMouseUp);
 
     return () => {
-      canvas.removeEventListener('mousedown', handleStart);
-      canvas.removeEventListener('touchstart', handleStart);
-      canvas.removeEventListener('mouseup', handleEnd);
-      canvas.removeEventListener('touchend', handleEnd);
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchend', handleTouchEnd);
+      canvas.removeEventListener('mousedown', handleMouseDown);
+      canvas.removeEventListener('mouseup', handleMouseUp);
     };
   }, [camera, gl, scene, raycaster, pointer, onHoverStart, onHoverEnd]);
 
@@ -75,6 +105,7 @@ const JsonyControls: React.FC<{
       rotateSpeed={rotateSpeed}
       enableDamping={true}
       dampingFactor={0.05}
+      enabled={false}
     />
   );
 };
