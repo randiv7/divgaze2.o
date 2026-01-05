@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useMemo } from 'react';
+import React, { Suspense, useState, useMemo, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
@@ -8,24 +8,73 @@ const EarthScene: React.FC = () => {
   const [autoRotate, setAutoRotate] = useState(true);
   const [showWeather] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [screenSize, setScreenSize] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
 
   const sunPosition = useMemo(() => new THREE.Vector3(15, 5, 10), []);
+
+  // Detect screen size for responsive adjustments
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setScreenSize('mobile');
+      } else if (width < 1024) {
+        setScreenSize('tablet');
+      } else {
+        setScreenSize('desktop');
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Responsive camera settings
+  const cameraSettings = useMemo(() => {
+    switch (screenSize) {
+      case 'mobile':
+        return { position: [0, 0, 6.5] as [number, number, number], fov: 45 };
+      case 'tablet':
+        return { position: [0, 0, 5.5] as [number, number, number], fov: 42 };
+      default:
+        return { position: [0, 0, 4.5] as [number, number, number], fov: 40 };
+    }
+  }, [screenSize]);
+
+  // Responsive star count for performance
+  const starCount = useMemo(() => {
+    switch (screenSize) {
+      case 'mobile':
+        return 6000;
+      case 'tablet':
+        return 8000;
+      default:
+        return 12000;
+    }
+  }, [screenSize]);
 
   return (
     <Canvas 
       shadows 
       gl={{ 
-        antialias: true,
+        antialias: screenSize === 'desktop',
         toneMapping: THREE.ACESFilmicToneMapping,
-        outputColorSpace: THREE.SRGBColorSpace
+        outputColorSpace: THREE.SRGBColorSpace,
+        powerPreference: screenSize === 'mobile' ? 'low-power' : 'high-performance',
       }}
+      dpr={screenSize === 'mobile' ? [1, 1.5] : [1, 2]}
       style={{ 
         position: 'absolute', 
         inset: 0
       }}
     >
       <Suspense fallback={null}>
-        <PerspectiveCamera makeDefault position={[0, 0, 4.5]} fov={40} />
+        <PerspectiveCamera 
+          makeDefault 
+          position={cameraSettings.position} 
+          fov={cameraSettings.fov} 
+        />
         
         <ambientLight intensity={0.05} />
         <directionalLight 
@@ -37,8 +86,8 @@ const EarthScene: React.FC = () => {
         <Stars 
           radius={300} 
           depth={50} 
-          count={12000} 
-          factor={7} 
+          count={starCount} 
+          factor={screenSize === 'mobile' ? 5 : 7} 
           saturation={0} 
           fade 
           speed={0.5} 
@@ -54,7 +103,7 @@ const EarthScene: React.FC = () => {
           enablePan={false}
           enableZoom={false}
           enableRotate={true}
-          rotateSpeed={0.5}
+          rotateSpeed={screenSize === 'mobile' ? 0.3 : 0.5}
           enableDamping={true}
           dampingFactor={0.05}
           onStart={() => {
