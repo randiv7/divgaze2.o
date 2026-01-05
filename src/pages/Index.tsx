@@ -80,7 +80,7 @@ const Index = () => {
       <AboutSection />
 
       {/* Liquid Reveal Animation Section */}
-      <LiquidReveal imageUrl="/sl.png" ghostText="Vision" />
+      <LiquidReveal ghostText="Vision" />
 
       {/* Marquee Animation Section */}
       <MarqueeSection />

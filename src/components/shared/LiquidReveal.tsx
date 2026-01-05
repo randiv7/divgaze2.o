@@ -1,25 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const EarthScene = React.lazy(() => import('./EarthScene'));
+
 interface LiquidRevealProps {
-  imageUrl?: string;
   ghostText?: string;
 }
 
 const LiquidReveal: React.FC<LiquidRevealProps> = ({ 
-  imageUrl = "/sl.png", 
   ghostText = "Vision" 
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
+  const sceneContainerRef = useRef<HTMLDivElement>(null);
   const ghostTextRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current || !imageContainerRef.current || !imageRef.current) return;
+    if (!sectionRef.current || !sceneContainerRef.current) return;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -33,8 +32,7 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
         }
       });
 
-      // Animate clip-path from circle to full screen
-      tl.fromTo(imageContainerRef.current, 
+      tl.fromTo(sceneContainerRef.current, 
         { 
           clipPath: "circle(0% at 50% 50%)",
         },
@@ -45,7 +43,7 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
         }, 0
       );
 
-      tl.to(imageContainerRef.current, 
+      tl.to(sceneContainerRef.current, 
         { 
           clipPath: "circle(150% at 50% 50%)",
           duration: 1.5,
@@ -53,22 +51,6 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
         }, 0.5
       );
 
-      // Image scale and filter animation
-      tl.fromTo(imageRef.current, 
-        { 
-          scale: 1.5, 
-          filter: "brightness(0.4) blur(20px)" 
-        },
-        { 
-          scale: 1, 
-          filter: "brightness(1) blur(0px)", 
-          duration: 2, 
-          ease: "power2.out" 
-        },
-        0
-      );
-
-      // Ghost text parallax
       if (ghostTextRef.current) {
         tl.to(ghostTextRef.current, {
           y: -200,
@@ -97,21 +79,15 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
         </h2>
       </div>
 
-      {/* Image container with clip-path animation */}
+      {/* 3D Scene container with clip-path animation */}
       <div 
-        ref={imageContainerRef}
+        ref={sceneContainerRef}
         className="absolute inset-0 z-10"
         style={{ clipPath: "circle(0% at 50% 50%)" }}
       >
-        <div 
-          ref={imageRef}
-          className="absolute inset-0 w-full h-full"
-          style={{
-            backgroundImage: `url(${imageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
+        <Suspense fallback={<div className="w-full h-full bg-black" />}>
+          <EarthScene />
+        </Suspense>
       </div>
 
       {/* Gradient overlay */}
