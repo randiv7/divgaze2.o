@@ -1,45 +1,15 @@
-import React, { Suspense, useState, useMemo, useEffect } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
+import React, { Suspense, useState, useMemo } from 'react';
+import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import Earth from './Earth';
-
-const ResponsiveCamera: React.FC = () => {
-  const { camera, size } = useThree();
-  
-  useEffect(() => {
-    const isMobile = size.width < 768;
-    const isTablet = size.width >= 768 && size.width < 1024;
-    
-    if (isMobile) {
-      camera.position.z = 6.5;
-    } else if (isTablet) {
-      camera.position.z = 5.5;
-    } else {
-      camera.position.z = 4.5;
-    }
-    camera.updateProjectionMatrix();
-  }, [camera, size]);
-  
-  return null;
-};
 
 const EarthScene: React.FC = () => {
   const [autoRotate, setAutoRotate] = useState(true);
   const [showWeather] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   const sunPosition = useMemo(() => new THREE.Vector3(15, 5, 10), []);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   return (
     <Canvas 
@@ -51,13 +21,11 @@ const EarthScene: React.FC = () => {
       }}
       style={{ 
         position: 'absolute', 
-        inset: 0,
-        touchAction: 'pan-y'
+        inset: 0
       }}
     >
       <Suspense fallback={null}>
         <PerspectiveCamera makeDefault position={[0, 0, 4.5]} fov={40} />
-        <ResponsiveCamera />
         
         <ambientLight intensity={0.05} />
         <directionalLight 
@@ -86,7 +54,7 @@ const EarthScene: React.FC = () => {
           enablePan={false}
           enableZoom={false}
           enableRotate={true}
-          rotateSpeed={isMobile ? 0.3 : 0.5}
+          rotateSpeed={0.5}
           enableDamping={true}
           dampingFactor={0.05}
           onStart={() => {
