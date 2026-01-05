@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { KineticTypographyCanvas, DEFAULT_THEME } from './kineticTypography';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,7 +16,7 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const sceneContainerRef = useRef<HTMLDivElement>(null);
-  const ghostTextRef = useRef<HTMLHeadingElement>(null);
+  const kineticContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!sectionRef.current || !sceneContainerRef.current) return;
@@ -32,12 +33,13 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
         }
       });
 
+      // Earth scene clip-path reveal - from center of text circle (50% horizontal, 45% vertical)
       tl.fromTo(sceneContainerRef.current, 
         { 
-          clipPath: "circle(0% at 50% 50%)",
+          clipPath: "circle(0% at 50% 45%)",
         },
         { 
-          clipPath: "circle(5% at 50% 50%)",
+          clipPath: "circle(5% at 50% 45%)",
           duration: 0.5,
           ease: "power2.inOut"
         }, 0
@@ -45,19 +47,19 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
 
       tl.to(sceneContainerRef.current, 
         { 
-          clipPath: "circle(150% at 50% 50%)",
+          clipPath: "circle(150% at 50% 45%)",
           duration: 1.5,
           ease: "power2.inOut"
         }, 0.5
       );
 
-      if (ghostTextRef.current) {
-        tl.to(ghostTextRef.current, {
-          y: -200,
+      // Fade out kinetic typography as earth reveals
+      if (kineticContainerRef.current) {
+        tl.to(kineticContainerRef.current, {
           opacity: 0,
-          duration: 2,
-          ease: "none"
-        }, 0);
+          duration: 1.5,
+          ease: "power2.out"
+        }, 0.3);
       }
     }, sectionRef);
 
@@ -69,21 +71,24 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
       ref={sectionRef}
       className="h-screen w-full relative overflow-hidden bg-black"
     >
-      {/* Ghost text background */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-        <h2 
-          ref={ghostTextRef}
-          className="text-white/[0.03] font-inter font-bold text-[30vw] md:text-[25vw] select-none uppercase tracking-tighter"
-        >
-          {ghostText}
-        </h2>
+      {/* Kinetic Typography background (replaces ghost text) */}
+      <div 
+        ref={kineticContainerRef}
+        className="absolute inset-0 z-0"
+      >
+        <KineticTypographyCanvas 
+          text="THE VOID IS WHISPERING BACK"
+          theme={DEFAULT_THEME}
+          depth={0.65}
+          rotationSpeed={0.005}
+        />
       </div>
 
-      {/* 3D Scene container with clip-path animation */}
+      {/* 3D Earth Scene container with clip-path animation */}
       <div 
         ref={sceneContainerRef}
         className="absolute inset-0 z-10"
-        style={{ clipPath: "circle(0% at 50% 50%)" }}
+        style={{ clipPath: "circle(0% at 50% 45%)" }}
       >
         <Suspense fallback={<div className="w-full h-full bg-black" />}>
           <EarthScene />
