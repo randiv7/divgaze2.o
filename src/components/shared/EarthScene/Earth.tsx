@@ -165,9 +165,9 @@ const Earth: React.FC<EarthProps> = ({ autoRotate, sunPosition, showWeather }) =
     const t = state.clock.getElapsedTime();
     if (earthRef.current && earthShaderMaterial) {
       if (autoRotate) {
-        earthRef.current.rotation.y += delta * 0.05;
-        if (cloudRef.current) cloudRef.current.rotation.y += delta * 0.07;
-        if (weatherRef.current) weatherRef.current.rotation.y += delta * 0.05;
+        earthRef.current.rotation.y += delta * 0.15;
+        if (cloudRef.current) cloudRef.current.rotation.y += delta * 0.18;
+        if (weatherRef.current) weatherRef.current.rotation.y += delta * 0.15;
       }
       
       const sunDir = sunPosition.clone().normalize();
