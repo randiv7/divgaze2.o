@@ -30,7 +30,10 @@ const JsonyControls: React.FC<{
       getPointerPosition(e);
       raycaster.setFromCamera(pointer, camera);
       const intersects = raycaster.intersectObjects(scene.children, true);
-      return intersects.some(i => i.object.type === 'Mesh' && i.object.geometry.type === 'SphereGeometry');
+      return intersects.some(i => {
+        const mesh = i.object as THREE.Mesh;
+        return mesh.isMesh && mesh.geometry?.type === 'SphereGeometry';
+      });
     };
 
     const handleStart = (e: TouchEvent | MouseEvent) => {
