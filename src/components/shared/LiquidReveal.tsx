@@ -73,7 +73,10 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none px-6 sm:px-8 md:px-12 lg:px-16">
         <div 
           ref={ghostTextRef}
-          className="text-white/[0.15] font-inter font-bold text-[15vw] sm:text-[16vw] md:text-[18vw] lg:text-[20vw] select-none uppercase tracking-tighter text-center leading-[0.9]"
+          className="text-white/[0.25] font-inter font-bold text-[15vw] sm:text-[16vw] md:text-[18vw] lg:text-[20vw] select-none uppercase tracking-tighter text-center leading-[0.9]"
+          style={{
+            textShadow: '0 0 80px rgba(255,255,255,0.1)'
+          }}
         >
           <span className="block mt-8 sm:mt-10 md:mt-12 lg:mt-16">From the</span>
           <span className="block">Future</span>
@@ -95,10 +98,10 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 pointer-events-none z-20" />
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 opacity-30">
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 opacity-50">
         <div className="flex flex-col items-center gap-2">
-          <span className="text-white/50 text-xs uppercase tracking-widest">Scroll</span>
-          <div className="w-px h-12 bg-white animate-pulse" />
+          <span className="text-white/60 text-xs uppercase tracking-[0.2em]">Scroll</span>
+          <div className="w-px h-12 bg-gradient-to-b from-white/60 to-white/10 animate-pulse" />
         </div>
       </div>
     </section>
