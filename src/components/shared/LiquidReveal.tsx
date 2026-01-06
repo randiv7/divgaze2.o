@@ -11,11 +11,11 @@ interface LiquidRevealProps {
 }
 
 const LiquidReveal: React.FC<LiquidRevealProps> = ({ 
-  ghostText = "Vision" 
+  ghostText = "From the Future" 
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const sceneContainerRef = useRef<HTMLDivElement>(null);
-  const ghostTextRef = useRef<HTMLHeadingElement>(null);
+  const ghostTextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!sectionRef.current || !sceneContainerRef.current) return;
@@ -70,13 +70,14 @@ const LiquidReveal: React.FC<LiquidRevealProps> = ({
       className="h-screen w-full relative overflow-hidden bg-black"
     >
       {/* Ghost text background */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-        <h2 
+      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none px-6 sm:px-8 md:px-12 lg:px-16">
+        <div 
           ref={ghostTextRef}
-          className="text-white/[0.03] font-inter font-bold text-[30vw] md:text-[25vw] select-none uppercase tracking-tighter"
+          className="text-white/[0.15] font-inter font-bold text-[15vw] sm:text-[16vw] md:text-[18vw] lg:text-[20vw] select-none uppercase tracking-tighter text-center leading-[0.9]"
         >
-          {ghostText}
-        </h2>
+          <span className="block mt-8 sm:mt-10 md:mt-12 lg:mt-16">From the</span>
+          <span className="block">Future</span>
+        </div>
       </div>
 
       {/* 3D Scene container with clip-path animation */}
