@@ -8,6 +8,7 @@ export const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     service: '',
     message: '',
   });
@@ -35,6 +36,7 @@ export const ContactSection = () => {
       setFormData({
         name: '',
         email: '',
+        phone: '',
         service: '',
         message: '',
       });
@@ -63,9 +65,6 @@ export const ContactSection = () => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-2">
-                  Name
-                </label>
                 <input
                   type="text"
                   id="name"
@@ -74,14 +73,11 @@ export const ContactSection = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-4 bg-secondary border-0 focus:ring-2 focus:ring-foreground transition-all outline-none"
-                  placeholder="Your name"
+                  placeholder="Name"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  Email
-                </label>
                 <input
                   type="email"
                   id="email"
@@ -90,14 +86,24 @@ export const ContactSection = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-4 bg-secondary border-0 focus:ring-2 focus:ring-foreground transition-all outline-none"
-                  placeholder="your@email.com"
+                  placeholder="Email"
                 />
               </div>
 
               <div>
-                <label htmlFor="service" className="block text-sm font-medium mb-2">
-                  I'm interested in...
-                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-4 bg-secondary border-0 focus:ring-2 focus:ring-foreground transition-all outline-none"
+                  placeholder="Phone Number"
+                />
+              </div>
+
+              <div>
                 <select
                   id="service"
                   name="service"
@@ -115,9 +121,6 @@ export const ContactSection = () => {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-2">
-                  Message
-                </label>
                 <textarea
                   id="message"
                   name="message"
@@ -126,7 +129,7 @@ export const ContactSection = () => {
                   required
                   rows={6}
                   className="w-full px-4 py-4 bg-secondary border-0 focus:ring-2 focus:ring-foreground transition-all outline-none resize-none"
-                  placeholder="Tell us about your project..."
+                  placeholder="Message"
                 />
               </div>
 
