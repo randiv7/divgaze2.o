@@ -58,17 +58,21 @@ const Index = () => {
 
       {/* Services Section */}
       <section id="services" className="section-full bg-background font-inter">
-        <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-4">
+        <div className="mx-auto w-full max-w-[1600px] px-5 sm:px-8 md:px-8 lg:px-4">
           <AnimatedSection>
-            <span className="text-sm font-medium text-muted-foreground tracking-widest uppercase mb-4 block">
-              Our Services
-            </span>
-            <h2 className="heading-lg max-w-3xl mb-8 sm:mb-12 md:mb-16">
-              Three disciplines, <span className="opacity-60">one vision.</span>
-            </h2>
+            {/* Section Header - Mobile Optimized */}
+            <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16">
+              <span className="text-xs sm:text-sm font-medium text-muted-foreground tracking-widest uppercase mb-3 sm:mb-4 block">
+                Our Services
+              </span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-tight max-w-3xl">
+                Three disciplines, <span className="opacity-60">one vision.</span>
+              </h2>
+            </div>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 md:gap-3 lg:gap-4">
+          {/* Service Cards Grid - Mobile Stack, Desktop 3-Col */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-4 lg:gap-6">
             {services.map((service, index) => (
               <ServiceCard key={service.title} {...service} index={index} />
             ))}

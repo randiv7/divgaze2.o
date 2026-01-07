@@ -48,7 +48,7 @@ export const ServiceCard = ({ title, description, href, index, image }: ServiceC
         className="block"
       >
         {/* Card with Lift, Shadow Expansion, and Rounded Corners - Responsive Height */}
-        <div className="relative w-full min-h-[250px] sm:min-h-[300px] md:min-h-[400px] rounded-2xl md:rounded-[24px] overflow-hidden mb-4 md:mb-6 bg-secondary clickable-media transition-all duration-700 ease-out group-hover:-translate-y-3 group-hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.12)]">
+        <div className="relative w-full aspect-[4/3] sm:aspect-[4/3] md:aspect-square lg:aspect-[4/3] rounded-xl sm:rounded-2xl md:rounded-[24px] overflow-hidden mb-3 sm:mb-4 md:mb-6 bg-secondary clickable-media transition-all duration-700 ease-out group-hover:-translate-y-3 group-hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.12)]">
           {/* Background Image with Scale on Hover */}
           {image && (
             <div className="absolute inset-0 overflow-hidden">
@@ -64,10 +64,10 @@ export const ServiceCard = ({ title, description, href, index, image }: ServiceC
         </div>
 
         {/* Title and Description Below Card - Responsive Typography */}
-        <div className="space-y-2 md:space-y-3">
+        <div className="space-y-1.5 sm:space-y-2 md:space-y-3">
           <div className="flex items-center justify-between">
             {/* Title Slide on Hover with Underline Expand */}
-            <h3 className="relative text-xl sm:text-2xl md:text-3xl font-medium tracking-tight text-foreground group-hover:translate-x-2 transition-transform duration-500 flex items-center gap-2">
+            <h3 className="relative text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium tracking-tight text-foreground group-hover:translate-x-2 transition-transform duration-500 flex items-center gap-1.5 sm:gap-2">
               <span className="relative">
                 {title}
                 {/* Underline Expand Animation */}
@@ -75,11 +75,11 @@ export const ServiceCard = ({ title, description, href, index, image }: ServiceC
               </span>
               {/* Arrow Icon Entrance */}
               <ArrowUpRight 
-                className="w-5 h-5 md:w-6 md:h-6 opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 text-black/40" 
+                className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 text-black/40" 
               />
             </h3>
           </div>
-          <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">{description}</p>
+          <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-none">{description}</p>
         </div>
       </Link>
     </div>
