@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AnimatedSection } from './AnimatedSection';
-import { ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import emailjs from '@emailjs/browser';
 
 export const ContactSection = () => {
   const { toast } = useToast();
@@ -26,7 +26,33 @@ export const ContactSection = () => {
     setIsSubmitting(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const SERVICE_ID = 'service_aunkd2p';
+      const TEMPLATE_ID = 'template_5d2qg2b';
+      const PUBLIC_KEY = 'bGf8vB5bzrquajmxf';
+
+      const now = new Date();
+      const timeString = now.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          service: formData.service,
+          message: formData.message,
+          time: timeString,
+        },
+        PUBLIC_KEY
+      );
 
       toast({
         title: "Message sent successfully!",
@@ -41,6 +67,7 @@ export const ContactSection = () => {
         message: '',
       });
     } catch (error) {
+      console.error('EmailJS Error:', error);
       toast({
         title: "Something went wrong",
         description: "Please try again later.",
