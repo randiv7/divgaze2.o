@@ -1,8 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Starburst from './Starburst';
 
 const Footer: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleContactClick = () => {
+    navigate('/', { state: { scrollTo: 'contact' } });
+  };
+
   return (
     <footer className="bg-[#FFF4E4] min-h-screen flex flex-col text-[#2B1A12]">
       {/* Top Section - Full Screen with Title and Button */}
@@ -13,8 +19,8 @@ const Footer: React.FC = () => {
           </h2>
           
           {/* Contact Button - Same style as Selected Work */}
-          <Link 
-            to="/#contact"
+          <button 
+            onClick={handleContactClick}
             className="group relative px-12 md:px-16 py-4 md:py-5 overflow-hidden border border-[#2B1A12]/10 transition-all hover:border-[#2B1A12] duration-700"
           >
             <span className="relative z-10 text-[10px] uppercase tracking-[0.5em] font-medium text-[#2B1A12]">
@@ -24,7 +30,7 @@ const Footer: React.FC = () => {
             <span className="absolute inset-0 flex items-center justify-center text-[#FFF4E4] opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-[10px] uppercase tracking-[0.5em] font-medium">
               Contact Us
             </span>
-          </Link>
+          </button>
         </div>
       </div>
       
