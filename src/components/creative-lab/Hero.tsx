@@ -70,7 +70,7 @@ const Hero: React.FC = () => {
             <motion.span
               key={index}
               variants={letterVariants}
-              className="text-[18vw] sm:text-[20vw] md:text-[14vw] font-serif italic font-light tracking-tighter text-[#2B1A12]/90 leading-none inline-block origin-bottom"
+              className="text-[18vw] sm:text-[20vw] md:text-[16vw] lg:text-[14vw] font-serif italic font-light tracking-tighter text-[#2B1A12]/90 leading-none inline-block origin-bottom"
             >
               {char}
             </motion.span>
@@ -124,7 +124,7 @@ const Hero: React.FC = () => {
               <motion.span
                 key={index}
                 variants={letterVariants}
-                className="text-[18vw] sm:text-[20vw] md:text-[14vw] font-serif italic font-light tracking-tighter text-[#2B1A12]/90 leading-none inline-block origin-bottom"
+                className="text-[18vw] sm:text-[20vw] md:text-[16vw] lg:text-[14vw] font-serif italic font-light tracking-tighter text-[#2B1A12]/90 leading-none inline-block origin-bottom"
               >
                 {char}
               </motion.span>
