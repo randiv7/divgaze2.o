@@ -26,9 +26,9 @@ export const ContactSection = () => {
     setIsSubmitting(true);
 
     try {
-      const SERVICE_ID = 'service_aunkd2p';
-      const TEMPLATE_ID = 'template_5d2qg2b';
-      const PUBLIC_KEY = 'bGf8vB5bzrquajmxf';
+      const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
       const now = new Date();
       const timeString = now.toLocaleString('en-US', {
