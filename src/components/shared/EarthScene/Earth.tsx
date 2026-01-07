@@ -12,65 +12,100 @@ const Earth: React.FC<EarthProps> = ({ autoRotate, sunPosition, showWeather }) =
   const earthRef = useRef<THREE.Mesh>(null);
   const cloudRef = useRef<THREE.Mesh>(null);
   const weatherRef = useRef<THREE.Mesh>(null);
+  
+  // Store refs for cleanup
+  const texturesRef = useRef<THREE.Texture[]>([]);
+  const materialsRef = useRef<THREE.Material[]>([]);
 
   const [textures, setTextures] = useState<{
     dayMap: THREE.Texture | null;
     nightMap: THREE.Texture | null;
-    normalMap: THREE.Texture | null;
     specularMap: THREE.Texture | null;
     cloudsMap: THREE.Texture | null;
   }>({
     dayMap: null,
     nightMap: null,
-    normalMap: null,
     specularMap: null,
     cloudsMap: null,
   });
 
-  useEffect(() => {
-    const loader = new THREE.TextureLoader();
-    const textureUrls = {
-      dayMap: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
-      nightMap: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_lights_2048.png',
-      normalMap: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_normal_2048.jpg',
-      specularMap: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_specular_2048.jpg',
-      cloudsMap: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_clouds_1024.png',
-    };
-
-    Promise.all([
-      loader.loadAsync(textureUrls.dayMap),
-      loader.loadAsync(textureUrls.nightMap),
-      loader.loadAsync(textureUrls.normalMap),
-      loader.loadAsync(textureUrls.specularMap),
-      loader.loadAsync(textureUrls.cloudsMap),
-    ]).then(([dayMap, nightMap, normalMap, specularMap, cloudsMap]) => {
-      setTextures({ dayMap, nightMap, normalMap, specularMap, cloudsMap });
-    });
+  const [loadError, setLoadError] = useState(false);
+  
+  // Responsive sphere segments based on screen size
+  const sphereSegments = useMemo(() => {
+    const width = window.innerWidth;
+    if (width < 768) return 64;
+    if (width < 1024) return 96;
+    return 128;
   }, []);
 
+  // Load textures with cleanup
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    let isMounted = true;
+    
+    // Local texture paths (removed unused normalMap)
+    const textureUrls = {
+      dayMap: '/textures/planets/earth_atmos_2048.jpg',
+      nightMap: '/textures/planets/earth_lights_2048.png',
+      specularMap: '/textures/planets/earth_specular_2048.jpg',
+      cloudsMap: '/textures/planets/earth_clouds_1024.png',
+    };
+
+    const loadTextures = async () => {
+      try {
+        const [dayMap, nightMap, specularMap, cloudsMap] = await Promise.all([
+          loader.loadAsync(textureUrls.dayMap),
+          loader.loadAsync(textureUrls.nightMap),
+          loader.loadAsync(textureUrls.specularMap),
+          loader.loadAsync(textureUrls.cloudsMap),
+        ]);
+
+        if (isMounted) {
+          // Store for cleanup
+          texturesRef.current = [dayMap, nightMap, specularMap, cloudsMap];
+          setTextures({ dayMap, nightMap, specularMap, cloudsMap });
+        }
+      } catch (error) {
+        console.error('Failed to load Earth textures:', error);
+        if (isMounted) {
+          setLoadError(true);
+        }
+      }
+    };
+
+    loadTextures();
+
+    // Cleanup: Dispose textures on unmount
+    return () => {
+      isMounted = false;
+      texturesRef.current.forEach((texture) => {
+        texture.dispose();
+      });
+      texturesRef.current = [];
+    };
+  }, []);
+
+  // Create earth shader material
   const earthShaderMaterial = useMemo(() => {
-    if (!textures.dayMap || !textures.nightMap || !textures.normalMap || !textures.specularMap) {
+    if (!textures.dayMap || !textures.nightMap || !textures.specularMap) {
       return null;
     }
-    return new THREE.ShaderMaterial({
+    const material = new THREE.ShaderMaterial({
       uniforms: {
         sunDirection: { value: sunPosition.clone().normalize() },
         dayTexture: { value: textures.dayMap },
         nightTexture: { value: textures.nightMap },
-        normalTexture: { value: textures.normalMap },
         specularTexture: { value: textures.specularMap },
       },
       vertexShader: `
         varying vec2 vUv;
         varying vec3 vNormal;
         varying vec3 vViewPosition;
-        varying vec3 vWorldPosition;
         void main() {
           vUv = uv;
-          vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-          vWorldPosition = worldPosition.xyz;
           vNormal = normalize(normalMatrix * normal);
-          vViewPosition = - (modelViewMatrix * vec4(position, 1.0)).xyz;
+          vViewPosition = -(modelViewMatrix * vec4(position, 1.0)).xyz;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
@@ -78,7 +113,6 @@ const Earth: React.FC<EarthProps> = ({ autoRotate, sunPosition, showWeather }) =
         uniform vec3 sunDirection;
         uniform sampler2D dayTexture;
         uniform sampler2D nightTexture;
-        uniform sampler2D normalTexture;
         uniform sampler2D specularTexture;
         varying vec2 vUv;
         varying vec3 vNormal;
@@ -100,10 +134,14 @@ const Earth: React.FC<EarthProps> = ({ autoRotate, sunPosition, showWeather }) =
         }
       `
     });
+    
+    materialsRef.current.push(material);
+    return material;
   }, [textures, sunPosition]);
 
+  // Create weather shader material
   const weatherShaderMaterial = useMemo(() => {
-    return new THREE.ShaderMaterial({
+    const material = new THREE.ShaderMaterial({
       transparent: true,
       uniforms: {
         time: { value: 0 },
@@ -159,10 +197,24 @@ const Earth: React.FC<EarthProps> = ({ autoRotate, sunPosition, showWeather }) =
         }
       `
     });
+    
+    materialsRef.current.push(material);
+    return material;
+  }, []);
+
+  // Cleanup materials on unmount
+  useEffect(() => {
+    return () => {
+      materialsRef.current.forEach((material) => {
+        material.dispose();
+      });
+      materialsRef.current = [];
+    };
   }, []);
 
   useFrame((state, delta) => {
     const t = state.clock.getElapsedTime();
+    
     if (earthRef.current && earthShaderMaterial) {
       if (autoRotate) {
         earthRef.current.rotation.y += delta * 0.15;
@@ -182,22 +234,37 @@ const Earth: React.FC<EarthProps> = ({ autoRotate, sunPosition, showWeather }) =
     }
   });
 
+  // Show fallback sphere if textures failed to load
+  if (loadError) {
+    return (
+      <group rotation={[0, 0, THREE.MathUtils.degToRad(23.44)]}>
+        <mesh>
+          <sphereGeometry args={[1, 64, 64]} />
+          <meshStandardMaterial color="#1a4d7c" />
+        </mesh>
+      </group>
+    );
+  }
+
   if (!earthShaderMaterial || !textures.cloudsMap) {
     return null;
   }
 
   return (
     <group rotation={[0, 0, THREE.MathUtils.degToRad(23.44)]}>
+      {/* Main Earth */}
       <mesh ref={earthRef} material={earthShaderMaterial}>
-        <sphereGeometry args={[1, 128, 128]} />
+        <sphereGeometry args={[1, sphereSegments, sphereSegments]} />
       </mesh>
 
+      {/* Weather Layer */}
       <mesh ref={weatherRef} material={weatherShaderMaterial}>
-        <sphereGeometry args={[1.008, 128, 128]} />
+        <sphereGeometry args={[1.008, sphereSegments, sphereSegments]} />
       </mesh>
 
+      {/* Cloud Layer */}
       <mesh ref={cloudRef}>
-        <sphereGeometry args={[1.015, 128, 128]} />
+        <sphereGeometry args={[1.015, sphereSegments, sphereSegments]} />
         <meshPhongMaterial
           map={textures.cloudsMap}
           transparent={true}
@@ -208,8 +275,9 @@ const Earth: React.FC<EarthProps> = ({ autoRotate, sunPosition, showWeather }) =
         />
       </mesh>
 
+      {/* Atmosphere Glow */}
       <mesh>
-        <sphereGeometry args={[1.04, 128, 128]} />
+        <sphereGeometry args={[1.04, sphereSegments, sphereSegments]} />
         <shaderMaterial
           transparent={true}
           side={THREE.BackSide}
