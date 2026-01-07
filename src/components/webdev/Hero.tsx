@@ -1,7 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
 
 export const Hero: React.FC = () => {
   return (
@@ -52,20 +50,6 @@ export const Hero: React.FC = () => {
           <p className="text-neutral-600 text-lg md:text-2xl font-light tracking-wide leading-relaxed">
             Built for performance, engineered for growth.
           </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.8 }}
-        >
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-medium rounded-full hover:bg-neutral-200 transition-colors duration-300"
-          >
-            Start Project
-            <ArrowRight className="w-5 h-5" />
-          </Link>
         </motion.div>
       </div>
 

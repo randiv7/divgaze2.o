@@ -1,9 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FadeIn } from './FadeIn';
 
 export const ContactCTA: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleContactClick = () => {
+    navigate('/', { state: { scrollTo: 'contact' } });
+  };
+
   return (
     <section className="py-40 md:py-60 bg-black border-t border-neutral-900">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
@@ -24,8 +30,8 @@ export const ContactCTA: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
-              <Link
-                to="/contact"
+              <button
+                onClick={handleContactClick}
                 className="group relative inline-flex items-center justify-center px-12 py-5 overflow-hidden font-medium text-black bg-white transition-all duration-700 ease-out hover:scale-105 active:scale-95"
               >
                 <span className="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-700 -translate-x-full bg-black group-hover:translate-x-0 ease-[0.16,1,0.3,1]">
@@ -33,7 +39,7 @@ export const ContactCTA: React.FC = () => {
                 </span>
                 <span className="absolute flex items-center justify-center w-full h-full text-black transition-all duration-700 transform group-hover:translate-x-full ease-[0.16,1,0.3,1] tracking-[0.2em] uppercase text-xs font-medium">Start Your Project</span>
                 <span className="relative invisible tracking-[0.2em] uppercase text-xs font-medium">Start Your Project</span>
-              </Link>
+              </button>
             </motion.div>
           </div>
         </FadeIn>
