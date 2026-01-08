@@ -30,6 +30,9 @@ export const ContactSection = () => {
       const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+      // Initialize EmailJS with public key
+      emailjs.init(PUBLIC_KEY);
+
       const now = new Date();
       const timeString = now.toLocaleString('en-US', {
         month: 'short',
