@@ -142,11 +142,11 @@ export const Footer = () => {
             <div className="flex flex-row md:flex-col gap-6 md:gap-4">
               {locations.map((loc) => (
                 <div key={loc.country} className="flex items-center gap-2 md:gap-3 group">
-                  <div className="w-6 h-4 md:w-8 md:h-6 overflow-hidden flex-shrink-0">
+                  <div className="w-8 h-6 md:w-10 md:h-7 overflow-hidden flex-shrink-0">
                     <img 
                       src={loc.flag} 
                       alt={`${loc.country} flag`}
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                      className="w-full h-full object-cover transition-all duration-500"
                     />
                   </div>
                   <p className="text-xs md:text-sm text-white/70 group-hover:text-white transition-colors duration-300">
@@ -155,9 +155,6 @@ export const Footer = () => {
                 </div>
               ))}
             </div>
-            <p className="text-[10px] md:text-xs text-white/40 mt-4">
-              Remote Worldwide
-            </p>
           </div>
         </div>
 
@@ -187,4 +184,4 @@ export const Footer = () => {
       </div>
     </footer>
   );
-};;
+};
